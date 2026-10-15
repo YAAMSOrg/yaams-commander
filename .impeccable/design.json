@@ -1,0 +1,687 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-15T19:40:45.719394+00:00",
+  "title": "Design System: YAAMS Commander",
+  "extensions": {
+    "colorMeta": {
+      "ops-night": {
+        "role": "neutral",
+        "displayName": "Ops Night",
+        "canonical": "#20242e",
+        "tonalRamp": [
+          "#080b12",
+          "#22252d",
+          "#3e424c",
+          "#5c616c",
+          "#7d828e",
+          "#a0a5b1",
+          "#c4c9d4",
+          "#eaeef9"
+        ]
+      },
+      "ops-sidebar": {
+        "role": "neutral",
+        "displayName": "Sidebar Slate",
+        "canonical": "#1a1e26",
+        "tonalRamp": [
+          "#090b11",
+          "#22252c",
+          "#3e424a",
+          "#5d616b",
+          "#7d828c",
+          "#a0a5af",
+          "#c5c9d2",
+          "#eaeff7"
+        ]
+      },
+      "console-slate": {
+        "role": "neutral",
+        "displayName": "Console Slate",
+        "canonical": "#282e3a",
+        "tonalRamp": [
+          "#080b13",
+          "#20252f",
+          "#3c424e",
+          "#5b616f",
+          "#7b8390",
+          "#9ea5b3",
+          "#c3c9d6",
+          "#e8effb"
+        ]
+      },
+      "console-slate-raised": {
+        "role": "neutral",
+        "displayName": "Raised Slate",
+        "canonical": "#303745",
+        "tonalRamp": [
+          "#070b14",
+          "#202530",
+          "#3c424f",
+          "#5a6170",
+          "#7b8392",
+          "#9da5b5",
+          "#c2c9d8",
+          "#e8effd"
+        ]
+      },
+      "console-slate-hover": {
+        "role": "neutral",
+        "displayName": "Hover Slate",
+        "canonical": "#343c4b",
+        "tonalRamp": [
+          "#070b14",
+          "#1f2531",
+          "#3b4250",
+          "#596171",
+          "#7a8393",
+          "#9da5b6",
+          "#c1c9d9",
+          "#e7effe"
+        ]
+      },
+      "table-zebra": {
+        "role": "neutral",
+        "displayName": "Zebra Slate",
+        "canonical": "#2b3240",
+        "tonalRamp": [
+          "#070b14",
+          "#202530",
+          "#3b424f",
+          "#5a6171",
+          "#7a8392",
+          "#9da5b5",
+          "#c2c9d8",
+          "#e8effd"
+        ]
+      },
+      "ledger-line": {
+        "role": "neutral",
+        "displayName": "Ledger Line",
+        "canonical": "#384050",
+        "tonalRamp": [
+          "#070b15",
+          "#1f2531",
+          "#3b4251",
+          "#596172",
+          "#7a8394",
+          "#9da5b6",
+          "#c1c9da",
+          "#e7effe"
+        ]
+      },
+      "ledger-line-strong": {
+        "role": "neutral",
+        "displayName": "Strong Line",
+        "canonical": "#4a5366",
+        "tonalRamp": [
+          "#060b16",
+          "#1e2533",
+          "#3a4252",
+          "#586174",
+          "#798296",
+          "#9ca5b9",
+          "#c0c9dc",
+          "#e6efff"
+        ]
+      },
+      "ledger-line-hover": {
+        "role": "neutral",
+        "displayName": "Hover Line",
+        "canonical": "#5a6478",
+        "tonalRamp": [
+          "#060b16",
+          "#1e2533",
+          "#3a4253",
+          "#586175",
+          "#788397",
+          "#9ba5b9",
+          "#c0c9dc",
+          "#e6efff"
+        ]
+      },
+      "text-primary": {
+        "role": "neutral",
+        "displayName": "Text Primary",
+        "canonical": "#f5f6f7",
+        "tonalRamp": [
+          "#0b0b0c",
+          "#242526",
+          "#414243",
+          "#606162",
+          "#818283",
+          "#a4a5a6",
+          "#c8c9ca",
+          "#eeeeef"
+        ]
+      },
+      "text-secondary": {
+        "role": "neutral",
+        "displayName": "Text Secondary",
+        "canonical": "#b6bac2",
+        "tonalRamp": [
+          "#090b0f",
+          "#23252a",
+          "#3f4248",
+          "#5e6168",
+          "#7f828a",
+          "#a2a5ac",
+          "#c6c9d0",
+          "#ebeef5"
+        ]
+      },
+      "text-muted": {
+        "role": "neutral",
+        "displayName": "Text Muted",
+        "canonical": "#7f8693",
+        "tonalRamp": [
+          "#080b12",
+          "#21252e",
+          "#3d424c",
+          "#5b616d",
+          "#7c838f",
+          "#9fa5b1",
+          "#c3c9d5",
+          "#e9effa"
+        ]
+      },
+      "text-placeholder": {
+        "role": "neutral",
+        "displayName": "Text Placeholder",
+        "canonical": "#596170",
+        "tonalRamp": [
+          "#070b14",
+          "#202530",
+          "#3b424f",
+          "#5a6170",
+          "#7a8392",
+          "#9da5b4",
+          "#c2c9d8",
+          "#e8effc"
+        ]
+      },
+      "dispatch-amber": {
+        "role": "primary",
+        "displayName": "Dispatch Amber",
+        "canonical": "#e8a53f",
+        "tonalRamp": [
+          "#220000",
+          "#441500",
+          "#673300",
+          "#8d5200",
+          "#b17400",
+          "#d39841",
+          "#f6be70",
+          "#ffe49e"
+        ]
+      },
+      "dispatch-amber-hover": {
+        "role": "primary",
+        "displayName": "Dispatch Amber Hover",
+        "canonical": "#f0b456",
+        "tonalRamp": [
+          "#200000",
+          "#411800",
+          "#643500",
+          "#895400",
+          "#ad7606",
+          "#cf9a48",
+          "#f1c076",
+          "#ffe6a2"
+        ]
+      },
+      "dispatch-amber-pressed": {
+        "role": "primary",
+        "displayName": "Dispatch Amber Pressed",
+        "canonical": "#cf8f2e",
+        "tonalRamp": [
+          "#210000",
+          "#431600",
+          "#663300",
+          "#8c5200",
+          "#b07407",
+          "#d29848",
+          "#f5be76",
+          "#ffe4a2"
+        ]
+      },
+      "dispatch-amber-link-hover": {
+        "role": "primary",
+        "displayName": "Dispatch Amber Link Hover",
+        "canonical": "#f3c27a",
+        "tonalRamp": [
+          "#1d0300",
+          "#3c1c00",
+          "#5e3900",
+          "#825803",
+          "#a57933",
+          "#c79d5e",
+          "#eac288",
+          "#ffe8b2"
+        ]
+      },
+      "amber-bronze": {
+        "role": "primary",
+        "displayName": "Amber Bronze",
+        "canonical": "#865f31",
+        "tonalRamp": [
+          "#1a0400",
+          "#391d00",
+          "#5b3a10",
+          "#7e592d",
+          "#a17a4e",
+          "#c39d74",
+          "#e6c29b",
+          "#ffe8c3"
+        ]
+      },
+      "amber-umber": {
+        "role": "primary",
+        "displayName": "Amber Umber",
+        "canonical": "#574736",
+        "tonalRamp": [
+          "#120902",
+          "#2e2216",
+          "#4d3f30",
+          "#6e5e4d",
+          "#907f6d",
+          "#b2a291",
+          "#d6c6b6",
+          "#fbecdc"
+        ]
+      },
+      "on-amber": {
+        "role": "primary",
+        "displayName": "On-Amber Ink",
+        "canonical": "#1c2430",
+        "tonalRamp": [
+          "#060b13",
+          "#1f252f",
+          "#3b434e",
+          "#596270",
+          "#798391",
+          "#9ca6b4",
+          "#c1cad7",
+          "#e7effc"
+        ]
+      },
+      "success": {
+        "role": "tertiary",
+        "displayName": "Success",
+        "canonical": "#3a8f42",
+        "tonalRamp": [
+          "#001400",
+          "#003200",
+          "#00520c",
+          "#20742b",
+          "#46974d",
+          "#6fba73",
+          "#98dd9a",
+          "#c2ffc3"
+        ]
+      },
+      "success-light": {
+        "role": "tertiary",
+        "displayName": "Success Light",
+        "canonical": "#d9f4d9",
+        "tonalRamp": [
+          "#030f03",
+          "#192a19",
+          "#344835",
+          "#526852",
+          "#728a72",
+          "#96ac96",
+          "#bad0ba",
+          "#e1f5e1"
+        ]
+      },
+      "danger": {
+        "role": "tertiary",
+        "displayName": "Danger",
+        "canonical": "#cc272e",
+        "tonalRamp": [
+          "#2e0000",
+          "#540000",
+          "#7d0d15",
+          "#a73131",
+          "#cf5651",
+          "#f27e76",
+          "#ffa69d",
+          "#ffcec5"
+        ]
+      },
+      "danger-light": {
+        "role": "tertiary",
+        "displayName": "Danger Light",
+        "canonical": "#ffdfda",
+        "tonalRamp": [
+          "#150705",
+          "#321f1d",
+          "#523c38",
+          "#745a56",
+          "#967b77",
+          "#b99e9a",
+          "#dcc2be",
+          "#ffe8e4"
+        ]
+      },
+      "warning": {
+        "role": "tertiary",
+        "displayName": "Warning",
+        "canonical": "#ccac16",
+        "tonalRamp": [
+          "#1a0500",
+          "#382000",
+          "#593e00",
+          "#7b5d00",
+          "#9e7f00",
+          "#bfa32c",
+          "#e2c863",
+          "#ffee93"
+        ]
+      },
+      "warning-light": {
+        "role": "tertiary",
+        "displayName": "Warning Light",
+        "canonical": "#f9efc9",
+        "tonalRamp": [
+          "#100b00",
+          "#2b250b",
+          "#494225",
+          "#6a6141",
+          "#8b8261",
+          "#aea585",
+          "#d1c9ab",
+          "#f6efd2"
+        ]
+      },
+      "info": {
+        "role": "tertiary",
+        "displayName": "Info",
+        "canonical": "#2c94b0",
+        "tonalRamp": [
+          "#001021",
+          "#002c40",
+          "#004c63",
+          "#006d87",
+          "#2d8faa",
+          "#5eb2cc",
+          "#8ad6ef",
+          "#b5fbff"
+        ]
+      },
+      "info-light": {
+        "role": "tertiary",
+        "displayName": "Info Light",
+        "canonical": "#d6f0f9",
+        "tonalRamp": [
+          "#020d12",
+          "#17282d",
+          "#32464c",
+          "#4f656d",
+          "#70878f",
+          "#93a9b1",
+          "#b8cdd5",
+          "#dff2f9"
+        ]
+      },
+      "neutral-status": {
+        "role": "tertiary",
+        "displayName": "Neutral Status",
+        "canonical": "#69737d",
+        "tonalRamp": [
+          "#070c11",
+          "#1f262d",
+          "#3b434b",
+          "#59626c",
+          "#7a848d",
+          "#9da6b0",
+          "#c1cad4",
+          "#e7f0f8"
+        ]
+      },
+      "neutral-status-light": {
+        "role": "tertiary",
+        "displayName": "Neutral Status Light",
+        "canonical": "#e2e5e8",
+        "tonalRamp": [
+          "#0a0b0d",
+          "#232527",
+          "#404244",
+          "#5f6164",
+          "#808385",
+          "#a3a5a8",
+          "#c7c9cc",
+          "#eceff1"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Wizard step headings."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Page title in the top bar."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Empty-state headings."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Descriptions, nav labels, banner messages."
+      },
+      "body-strong": {
+        "displayName": "Body strong",
+        "purpose": "Button labels, banner and toast titles."
+      },
+      "body-small": {
+        "displayName": "Body small",
+        "purpose": "Hints, field errors, toasts, tooltips."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Uppercase field labels, captions, table headers."
+      },
+      "data": {
+        "displayName": "Data",
+        "purpose": "ICAO codes, flight numbers, times, figures."
+      },
+      "data-strong": {
+        "displayName": "Data strong",
+        "purpose": "Flight numbers and emphasised figures."
+      },
+      "clock": {
+        "displayName": "Clock",
+        "purpose": "UTC clock in the top bar."
+      },
+      "chip": {
+        "displayName": "Chip",
+        "purpose": "Status, role and SOON chips."
+      }
+    },
+    "shadows": [
+      {
+        "name": "dialog",
+        "value": "0 12px 32px rgba(0,0,0,0.45)",
+        "purpose": "Wizard card floating on the background."
+      },
+      {
+        "name": "toast",
+        "value": "0 8px 24px rgba(0,0,0,0.5)",
+        "purpose": "Transient notifications."
+      },
+      {
+        "name": "menu",
+        "value": "0 8px 20px rgba(0,0,0,0.45)",
+        "purpose": "Pick-list dropdowns."
+      },
+      {
+        "name": "tooltip",
+        "value": "0 4px 12px rgba(0,0,0,0.4)",
+        "purpose": "Icon-button tooltips."
+      }
+    ],
+    "motion": [
+      {
+        "name": "toast-lifetime",
+        "value": "6s",
+        "purpose": "Success and info toasts expire; errors stay until dismissed."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "window-min",
+        "value": "1180px"
+      },
+      {
+        "name": "window-default",
+        "value": "1440px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The one action that matters on a view, e.g. File PIREP.",
+      "html": "<button class=\"ds-btn-primary\"><svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z\"/><path d=\"m21.854 2.147-10.94 10.939\"/></svg>File PIREP</button>",
+      "css": ".ds-btn-primary{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:6px;border:1px solid;font-family: Inter, system-ui, sans-serif;font-size:13px;font-weight:700;cursor:pointer;background:#e8a53f;border-color:#e8a53f;color:#1c2430;}.ds-btn-primary:hover{background:#f0b456;border-color:#f0b456;}.ds-btn-primary:active{background:#cf8f2e;border-color:#865f31;}.ds-btn-primary:focus-visible{outline:2px solid #f3c27a;outline-offset:2px;}"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Neutral actions such as Clear or Apply.",
+      "html": "<button class=\"ds-btn-secondary\">Clear</button>",
+      "css": ".ds-btn-secondary{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:6px;border:1px solid;font-family: Inter, system-ui, sans-serif;font-size:13px;font-weight:700;cursor:pointer;background:#303745;border-color:#4a5366;color:#f5f6f7;}.ds-btn-secondary:hover{background:#343c4b;border-color:#5a6478;}.ds-btn-secondary:active{background:#282e3a;}.ds-btn-secondary:focus-visible{outline:2px solid #e8a53f;outline-offset:2px;}"
+    },
+    {
+      "name": "Danger Button",
+      "kind": "button",
+      "refersTo": "button-danger",
+      "description": "Destructive actions; translucent until hovered.",
+      "html": "<button class=\"ds-btn-danger\">Delete profile</button>",
+      "css": ".ds-btn-danger{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:6px;border:1px solid;font-family: Inter, system-ui, sans-serif;font-size:13px;font-weight:700;cursor:pointer;background:rgba(204,39,46,0.15);border-color:rgba(204,39,46,0.6);color:#ffdfda;}.ds-btn-danger:hover{background:#cc272e;border-color:#cc272e;color:#f5f6f7;}.ds-btn-danger:focus-visible{outline:2px solid #e8a53f;outline-offset:2px;}"
+    },
+    {
+      "name": "Ghost Icon Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Toolbar icon button, always with a tooltip.",
+      "html": "<button class=\"ds-btn-ghost\" title=\"Refresh\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8\"/><path d=\"M21 3v5h-5\"/><path d=\"M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16\"/><path d=\"M8 16H3v5\"/></svg></button>",
+      "css": ".ds-btn-ghost{display:inline-flex;padding:7px;border-radius:6px;border:1px solid transparent;background:none;color:#b6bac2;cursor:pointer;}.ds-btn-ghost:hover{background:#343c4b;color:#f5f6f7;}.ds-btn-ghost:focus-visible{outline:2px solid #e8a53f;outline-offset:1px;}"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Labelled field with uppercase caption; mono for codes.",
+      "html": "<label class=\"ds-field\"><span class=\"ds-caption\">Departure</span><input class=\"ds-input\" placeholder=\"EDDF\"></label><label class=\"ds-field\"><span class=\"ds-caption\">Arrival</span><input class=\"ds-input ds-input-error\" placeholder=\"EGLL\"><span class=\"ds-error\">Required</span></label>",
+      "css": ".ds-field{display:flex;flex-direction:column;gap:6px;margin-bottom:12px;}.ds-caption{font-family: Inter, system-ui, sans-serif;font-size:11px;font-weight:700;text-transform:uppercase;color:#7f8693;}.ds-input{font-family: 'JetBrains Mono', ui-monospace, monospace;font-size:13px;background:#20242e;color:#f5f6f7;border:1px solid #4a5366;border-radius:6px;padding:7px 10px;outline:none;}.ds-input::placeholder{color:#596170;}.ds-input:hover{border-color:#5a6478;}.ds-input:focus{border-color:#e8a53f;}.ds-input-error,.ds-input-error:hover{border-color:#cc272e;}.ds-error{font-family: Inter, system-ui, sans-serif;font-size:12px;color:#ffdfda;}"
+    },
+    {
+      "name": "Sidebar Navigation",
+      "kind": "nav",
+      "refersTo": "nav-item",
+      "description": "Grouped sidebar nav; active entry in amber on a faint amber wash.",
+      "html": "<nav class=\"ds-nav\"><div class=\"ds-nav-group\">Operations</div><a class=\"ds-nav-item ds-nav-active\"><svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z\"/></svg>Flights</a><a class=\"ds-nav-item\"><svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z\"/><path d=\"m21.854 2.147-10.94 10.939\"/></svg>File PIREP</a><a class=\"ds-nav-item\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8\"/><path d=\"M21 3v5h-5\"/><path d=\"M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16\"/><path d=\"M8 16H3v5\"/></svg>Review queue<span class=\"ds-soon\">SOON</span></a></nav>",
+      "css": ".ds-nav{background:#1a1e26;padding:12px;width:212px;display:flex;flex-direction:column;gap:2px;}.ds-nav-group{font-family: Inter, system-ui, sans-serif;font-size:11px;font-weight:700;text-transform:uppercase;color:#7f8693;padding:0 12px 6px;}.ds-nav-item{display:flex;align-items:center;gap:12px;padding:9px 12px;border-radius:6px;font-family: Inter, system-ui, sans-serif;font-size:13px;color:#b6bac2;cursor:pointer;}.ds-nav-item:hover{background:#282e3a;color:#f5f6f7;}.ds-nav-active,.ds-nav-active:hover{background:rgba(232,165,63,0.14);color:#e8a53f;font-weight:700;}.ds-soon{margin-left:auto;font-family: 'JetBrains Mono', ui-monospace, monospace;font-size:9px;color:#7f8693;}"
+    },
+    {
+      "name": "Status Chips",
+      "kind": "chip",
+      "refersTo": "status-chip",
+      "description": "PIREP status as annotation: translucent fill, outline, light-tone text.",
+      "html": "<span class=\"ds-chip ds-pending\">Pending</span> <span class=\"ds-chip ds-accepted\">Accepted</span> <span class=\"ds-chip ds-rejected\">Rejected</span>",
+      "css": ".ds-chip{display:inline-block;font-family: 'JetBrains Mono', ui-monospace, monospace;font-size:10px;font-weight:700;text-transform:uppercase;padding:2px 7px;border-radius:4px;border:1px solid;}.ds-pending{background:rgba(204,172,22,0.18);border-color:rgba(204,172,22,0.55);color:#f9efc9;}.ds-accepted{background:rgba(58,143,66,0.18);border-color:rgba(58,143,66,0.55);color:#d9f4d9;}.ds-rejected{background:rgba(204,39,46,0.18);border-color:rgba(204,39,46,0.55);color:#ffdfda;}"
+    },
+    {
+      "name": "Ledger Table",
+      "kind": "custom",
+      "refersTo": "table-row",
+      "description": "Signature dense data table: 36px header, 38px zebra rows, amber selection.",
+      "html": "<div class=\"ds-table\"><div class=\"ds-tr ds-th\"><span>Flight</span><span>Dep</span><span>Arr</span><span>Off</span><span>Status</span></div><div class=\"ds-tr\"><span class=\"ds-fn\">EV421</span><span>EDDF</span><span>EGLL</span><span>10:00Z</span><span class=\"ds-chip ds-pending\">Pending</span></div><div class=\"ds-tr ds-zebra\"><span class=\"ds-fn\">EV422</span><span>EDDF</span><span>EGLL</span><span>10:00Z</span><span class=\"ds-chip ds-accepted\">Accepted</span></div><div class=\"ds-tr ds-sel\"><span class=\"ds-fn\">EV423</span><span>EDDF</span><span>EGLL</span><span>10:00Z</span><span class=\"ds-chip ds-rejected\">Rejected</span></div></div>",
+      "css": ".ds-table{background:#282e3a;border:1px solid #384050;border-radius:8px;overflow:hidden;width:480px;}.ds-tr{display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1.2fr;align-items:center;height:38px;padding:0 12px;font-family: 'JetBrains Mono', ui-monospace, monospace;font-size:13px;color:#f5f6f7;border:1px solid transparent;}.ds-tr:hover{background:#343c4b;}.ds-th,.ds-th:hover{height:36px;background:#303745;font-family: Inter, system-ui, sans-serif;font-size:11px;font-weight:700;text-transform:uppercase;color:#b6bac2;}.ds-zebra{background:#2b3240;}.ds-sel,.ds-sel:hover{background:rgba(232,165,63,0.13);border-color:rgba(232,165,63,0.55);}.ds-fn{color:#e8a53f;font-weight:700;}.ds-chip{justify-self:start;font-size:10px;font-weight:700;text-transform:uppercase;padding:2px 7px;border-radius:4px;border:1px solid;}.ds-pending{background:rgba(204,172,22,0.18);border-color:rgba(204,172,22,0.55);color:#f9efc9;}.ds-accepted{background:rgba(58,143,66,0.18);border-color:rgba(58,143,66,0.55);color:#d9f4d9;}.ds-rejected{background:rgba(204,39,46,0.18);border-color:rgba(204,39,46,0.55);color:#ffdfda;}"
+    },
+    {
+      "name": "Card Panel",
+      "kind": "card",
+      "refersTo": "panel",
+      "description": "Flat titled panel with amber icon and uppercase caption.",
+      "html": "<section class=\"ds-panel\"><header class=\"ds-panel-head\"><svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z\"/></svg><span>Flight</span></header><div class=\"ds-kv\"><span class=\"ds-caption\">Cruise</span><span class=\"ds-val\">FL360</span></div></section>",
+      "css": ".ds-panel{background:#282e3a;border:1px solid #384050;border-radius:8px;padding:18px;width:320px;display:flex;flex-direction:column;gap:16px;}.ds-panel-head{display:flex;align-items:center;gap:8px;color:#e8a53f;}.ds-panel-head span{font-family: Inter, system-ui, sans-serif;font-size:11px;font-weight:700;text-transform:uppercase;color:#b6bac2;}.ds-kv{display:flex;flex-direction:column;gap:4px;}.ds-caption{font-family: Inter, system-ui, sans-serif;font-size:11px;font-weight:700;text-transform:uppercase;color:#7f8693;}.ds-val{font-family: 'JetBrains Mono', ui-monospace, monospace;font-size:13px;color:#f5f6f7;}"
+    },
+    {
+      "name": "Banner",
+      "kind": "custom",
+      "refersTo": "banner",
+      "description": "Full-width tone notice: info, warning (read-only), danger.",
+      "html": "<div class=\"ds-banner\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><circle cx=\"12\" cy=\"12\" r=\"10\"/><path d=\"M12 16v-4M12 8h.01\"/></svg><div><div class=\"ds-banner-title\">Review required</div><div class=\"ds-banner-msg\">Your PIREP is filed as pending until a dispatcher accepts it.</div></div></div>",
+      "css": ".ds-banner{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:6px;background:rgba(44,148,176,0.18);border:1px solid rgba(44,148,176,0.55);color:#d6f0f9;width:420px;}.ds-banner-title{font-family: Inter, system-ui, sans-serif;font-size:13px;font-weight:700;color:#f5f6f7;}.ds-banner-msg{font-family: Inter, system-ui, sans-serif;font-size:12px;color:#b6bac2;}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Dispatch Ledger",
+    "overview": "YAAMS Commander is the dispatcher's record book made digital. Every screen is a page of the ledger: flight numbers, ICAO codes, block times and fuel figures in neat monospaced columns, ruled by thin lines, read under a dim night-shift light. The interface exists to make the entries legible and the one pending decision obvious. Nothing is there for decoration.\n\nThe world is dark and dense. A near-black slate ground (`ops-night`) carries slightly lighter console panels, separated by tone and 1px rules instead of shadows. A single amber accent - the YAAMS brand colour - marks what is active, selected or actionable: the current nav entry, the selected row, the primary button, the flight number. Status colours (green, red, yellow, teal) appear only as small translucent chips and banners that annotate the ledger, never as large fills.\n\nThe app takes a hobby and plays it straight. It should read like real airline operations software: UTC everywhere with a `Z` suffix, uppercase captions, exact figures, no illustrations, no gamified flourishes.",
+    "keyCharacteristics": [
+      "Dark tonal ledger: three close slate steps plus 1px rules carry all structure.",
+      "One amber voice for active, selected and primary.",
+      "Monospaced data, sans-serif prose, geometric display headings.",
+      "Status as annotation: translucent chips and banners, never solid blocks.",
+      "Fixed desktop chrome: sidebar, top bar with switchers and UTC clock, status bar."
+    ],
+    "rules": [
+      {
+        "name": "The One Amber Rule",
+        "body": "Amber means \"this is active, selected, or the action that matters\". At most one solid amber button per view; everything else amber is text, outline or a translucent wash.",
+        "section": "colors"
+      },
+      {
+        "name": "The Annotation Rule",
+        "body": "Status colour never fills a large surface. It appears as a chip, a banner, an icon disc or a field-error line, always translucent fill plus outline plus light-tone text.",
+        "section": "colors"
+      },
+      {
+        "name": "The Ledger Column Rule",
+        "body": "If it is a code, a time, an ID or a number, it is set in JetBrains Mono. Prose is never set in mono; data is never set in Inter.",
+        "section": "typography"
+      },
+      {
+        "name": "The Zulu Rule",
+        "body": "Every displayed time is UTC and ends in `Z` (`10:00Z`, `2026-07-11 11:35Z`). Durations (block time) carry no suffix.",
+        "section": "typography"
+      },
+      {
+        "name": "The Density Rule",
+        "body": "Rows are 38px, headers 36px, controls ~32-36px tall. Prefer more rows on screen over more whitespace.",
+        "section": "layout"
+      },
+      {
+        "name": "The Floating-Only Shadow Rule",
+        "body": "Only things that float above the app (dialogs, toasts, menus, tooltips) cast a shadow. Panels, cards, tables and buttons never do.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** take every colour, font and style from `src/theme.rs`; no widget falls back to the default Iced look.",
+      "**Do** set codes, times, IDs and figures in JetBrains Mono, and end every time with `Z`.",
+      "**Do** separate surfaces with the slate tonal steps and 1px `ledger-line` borders.",
+      "**Do** keep a single solid amber primary action per view.",
+      "**Do** show status as translucent chips and banners using the light tone as foreground.",
+      "**Do** give every nav item and primary action a Lucide icon.",
+      "**Do** use uppercase 11px bold captions for labels and section titles."
+    ],
+    "donts": [
+      "**Don't** put shadows on panels, cards, tables or buttons; shadows are for floating layers only.",
+      "**Don't** introduce a second accent colour or use status colours for decoration.",
+      "**Don't** use white text on amber; use On-Amber Ink.",
+      "**Don't** fill large areas with a status colour.",
+      "**Don't** use variable font files or add font families beyond the three embedded ones.",
+      "**Don't** show local time anywhere.",
+      "**Don't** add illustrations, gradients or playful ornament; the ledger plays it straight."
+    ]
+  }
+}
