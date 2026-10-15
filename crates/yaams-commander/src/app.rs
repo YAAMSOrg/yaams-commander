@@ -1055,14 +1055,7 @@ fn view_sidebar(session: &Session) -> Element<'_, Message> {
                     .color(theme::ON_AMBER)
             )
             .center(Length::Fixed(32.0))
-            .style(|_: &Theme| container::Style {
-                background: Some(theme::AMBER.into()),
-                border: iced::Border {
-                    radius: 999.0.into(),
-                    ..Default::default()
-                },
-                ..Default::default()
-            }),
+            .style(theme::dot(theme::AMBER)),
             column![
                 text(&user.name).size(13).font(theme::FONT_BODY_BOLD),
                 text(&user.email).size(11).color(theme::TEXT_MUTED),
@@ -1213,14 +1206,7 @@ fn view_statusbar(session: &Session, now: DateTime<Utc>) -> Element<'_, Message>
         Conn::Unauthorized => (theme::DANGER.strong, "Token rejected".to_string()),
         Conn::Offline(_) => (theme::WARNING.strong, "Offline".to_string()),
     };
-    let dot = container(space().width(8).height(8)).style(move |_: &Theme| container::Style {
-        background: Some(color.into()),
-        border: iced::Border {
-            radius: 999.0.into(),
-            ..Default::default()
-        },
-        ..Default::default()
-    });
+    let dot = container(space().width(8).height(8)).style(theme::dot(color));
     let small = |value: String| text(value).font(theme::FONT_MONO).size(11).color(theme::TEXT_SECONDARY);
     let sep = || text("|").size(11).color(theme::BORDER_STRONG);
 

@@ -2,7 +2,7 @@
 //! detail panel.
 
 use iced::widget::text::Wrapping;
-use iced::widget::{button, column, container, pick_list, row, scrollable, space, text, text_input};
+use iced::widget::{button, column, container, pick_list, row, rule, scrollable, space, text, text_input};
 use iced::{Alignment, Element, Length, Padding, Task};
 use yaams_api::{Airline, ApiError, Client, Flight, FlightQuery, FlightSort, FlightStatusFilter, OnlineNetwork, Page};
 
@@ -311,97 +311,88 @@ impl Flights {
                 .into(),
             None => table,
         };
-        column![self.view_kpis(), self.view_toolbar(), body]
+        column![self.view_summary(), self.view_toolbar(), body]
             .spacing(16)
             .width(Length::Fill)
             .height(Length::Fill)
             .into()
     }
 
-    fn view_kpis(&self) -> Element<'_, Message> {
+    /// Ledger summary bar: one ruled strip of status totals that doubles as
+    /// the status filter.
+    fn view_summary(&self) -> Element<'_, Message> {
         let counts = self.counts;
         let value = |f: fn(Counts) -> u32| counts.map_or_else(|| "-".to_string(), |c| format::thousands(f(c).into()));
-        let tile = |label: &'static str, value: String, glyph: Icon, tint: iced::Color, filter: FlightStatusFilter| {
+        let cell = |label: &'static str, value: String, glyph: Icon, tint: iced::Color, filter: FlightStatusFilter| {
             let active = self.query.status == filter;
+            let figure =
+                text(value)
+                    .font(theme::FONT_MONO_BOLD)
+                    .size(20)
+                    .color(if active { theme::AMBER } else { theme::TEXT });
+            let label = caption(label).color(if active { theme::TEXT } else { theme::TEXT_MUTED });
             button(
-                row![
-                    container(icon(glyph, 18).color(tint))
-                        .center(Length::Fixed(40.0))
-                        .style(theme::icon_disc(tint)),
-                    column![
-                        caption(label),
-                        text(value).font(theme::FONT_MONO_BOLD).size(22).color(theme::TEXT)
-                    ]
-                    .spacing(2),
-                ]
-                .spacing(14)
-                .align_y(Alignment::Center),
+                row![icon(glyph, 14).color(tint), label, space::horizontal(), figure]
+                    .spacing(10)
+                    .height(Length::Fill)
+                    .align_y(Alignment::Center),
             )
-            .padding(Padding::from([14, 16]))
+            .padding(Padding::from([0, 16]))
+            .height(Length::Fill)
             .width(Length::Fill)
-            .style(move |_: &iced::Theme, status| {
-                let hovered = matches!(status, button::Status::Hovered);
-                iced::widget::button::Style {
-                    background: Some(if hovered { theme::SURFACE_HOVER } else { theme::SURFACE }.into()),
-                    text_color: theme::TEXT,
-                    border: iced::Border {
-                        color: if active { tint } else { theme::BORDER },
-                        width: if active { 1.5 } else { 1.0 },
-                        radius: (theme::RADIUS + 2.0).into(),
-                    },
-                    shadow: iced::Shadow::default(),
-                    snap: true,
-                }
-            })
+            .style(theme::ledger_cell(active))
             .on_press(Message::StatusFilter(filter))
+            .into()
         };
-        row![
-            tile(
+        let cells: [Element<'_, Message>; 4] = [
+            cell(
                 "Total PIREPs",
                 value(|c| c.pending + c.accepted + c.rejected),
                 Icon::Plane,
                 theme::AMBER,
-                FlightStatusFilter::All
+                FlightStatusFilter::All,
             ),
-            tile(
+            cell(
                 "Pending review",
                 value(|c| c.pending),
                 Icon::Clock,
                 theme::WARNING.strong,
-                FlightStatusFilter::Pending
+                FlightStatusFilter::Pending,
             ),
-            tile(
+            cell(
                 "Accepted",
                 value(|c| c.accepted),
                 Icon::CircleCheck,
                 theme::SUCCESS.strong,
-                FlightStatusFilter::Accepted
+                FlightStatusFilter::Accepted,
             ),
-            tile(
+            cell(
                 "Rejected",
                 value(|c| c.rejected),
                 Icon::CircleX,
                 theme::DANGER.strong,
-                FlightStatusFilter::Rejected
+                FlightStatusFilter::Rejected,
             ),
-        ]
-        .spacing(12)
-        .into()
+        ];
+        let mut strip = row![].height(Length::Fill);
+        for (i, cell) in cells.into_iter().enumerate() {
+            if i > 0 {
+                strip = strip.push(rule::vertical(1).style(theme::divider));
+            }
+            strip = strip.push(cell);
+        }
+        container(strip)
+            .height(Length::Fixed(52.0))
+            .width(Length::Fill)
+            .style(theme::panel)
+            .clip(true)
+            .into()
     }
 
     fn view_toolbar(&self) -> Element<'_, Message> {
-        let segments = row(FlightStatusFilter::ALL.iter().map(|&status| {
-            button(text(status.label()).size(12).font(theme::FONT_BODY_BOLD))
-                .padding(Padding::from([7, 12]))
-                .style(theme::segment(self.query.status == status))
-                .on_press(Message::StatusFilter(status))
-                .into()
-        }))
-        .spacing(4);
-
         let f = &self.filters;
         let e = &self.filter_errors;
-        let filters = row![
+        row![
             icon(Icon::PlaneTakeoff, 14).color(theme::TEXT_MUTED),
             filter_input(
                 "DEP",
@@ -426,12 +417,8 @@ impl Flights {
             icon_button(Icon::FilterX, "Clear filters", Some(Message::Reset)),
         ]
         .spacing(8)
-        .align_y(Alignment::Center);
-
-        row![segments, space::horizontal(), filters]
-            .spacing(16)
-            .align_y(Alignment::Center)
-            .into()
+        .align_y(Alignment::Center)
+        .into()
     }
 
     fn view_table<'a>(&'a self, airline: &'a Airline, can_file: bool) -> Element<'a, Message> {
@@ -488,17 +475,16 @@ impl Flights {
                 empty_state(Icon::Inbox, theme::TEXT_MUTED, title, message, actions)
             }
             (Some(page), _) => {
-                let rows = page.data.iter().enumerate().map(|(i, flight)| {
+                let rows = page.data.iter().map(|flight| {
                     let selected = self.selected == Some(flight.id);
                     table::data_row(
                         &COLUMNS,
                         flight_cells(flight, airline),
                         selected,
-                        i % 2 == 1,
                         Message::Select(flight.id),
                     )
                 });
-                scrollable(column(rows))
+                scrollable(table::ruled(rows))
                     .height(Length::Fill)
                     .style(theme::scrollable)
                     .into()
@@ -568,15 +554,7 @@ impl Flights {
         )
         .padding(Padding::from([8, 14]))
         .width(Length::Fill)
-        .style(|_: &iced::Theme| container::Style {
-            border: iced::Border {
-                color: theme::BORDER,
-                width: 0.0,
-                radius: 0.0.into(),
-            },
-            background: Some(theme::SURFACE_RAISED.into()),
-            ..Default::default()
-        })
+        .style(theme::table_footer)
         .into()
     }
 }

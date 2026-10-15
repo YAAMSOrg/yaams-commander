@@ -1,4 +1,4 @@
-use iced::widget::{Button, Text, button, column, container, row, text, tooltip};
+use iced::widget::{Button, Text, button, column, container, row, rule, text, tooltip};
 use iced::{Alignment, Element, Length, Padding};
 use yaams_api::FlightStatus;
 
@@ -139,21 +139,26 @@ pub fn banner<'a, M: 'a>(
         .into()
 }
 
-/// Panel with a titled header.
+/// Panel with a titled header band, ruled off from its content.
 pub fn card<'a, M: 'a>(title: impl Into<String>, glyph: Icon, content: impl Into<Element<'a, M>>) -> Element<'a, M> {
-    container(
-        column![
-            row![
-                icon(glyph, 14).color(theme::AMBER),
-                caption(title.into()).color(theme::TEXT_SECONDARY)
-            ]
-            .spacing(8)
-            .align_y(Alignment::Center),
-            content.into(),
+    let header = container(
+        row![
+            icon(glyph, 14).color(theme::AMBER),
+            caption(title.into()).color(theme::TEXT_SECONDARY)
         ]
-        .spacing(16),
+        .spacing(8)
+        .align_y(Alignment::Center),
     )
-    .padding(18)
+    .padding(Padding::from([0, 18]))
+    .height(Length::Fixed(36.0))
+    .align_y(iced::alignment::Vertical::Center)
+    .width(Length::Fill)
+    .style(theme::card_header);
+    container(column![
+        header,
+        rule::horizontal(1).style(theme::divider),
+        container(content).padding(18).width(Length::Fill),
+    ])
     .width(Length::Fill)
     .style(theme::panel)
     .into()

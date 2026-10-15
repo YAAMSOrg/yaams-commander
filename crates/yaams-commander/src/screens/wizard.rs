@@ -374,15 +374,7 @@ impl Wizard {
             };
             let disc = container(marker)
                 .center(Length::Fixed(26.0))
-                .style(move |_: &iced::Theme| container::Style {
-                    background: Some(if current || done { marker_color } else { theme::SIDEBAR }.into()),
-                    border: iced::Border {
-                        color: marker_color,
-                        width: 1.5,
-                        radius: 999.0.into(),
-                    },
-                    ..Default::default()
-                });
+                .style(theme::step_marker(marker_color, current || done));
             row![
                 disc,
                 column![
@@ -409,14 +401,7 @@ impl Wizard {
             .padding(32)
             .width(Length::Fixed(280.0))
             .height(Length::Fill)
-            .style(|_: &iced::Theme| container::Style {
-                background: Some(theme::SIDEBAR.into()),
-                border: iced::Border {
-                    radius: iced::border::Radius::new(0.0).left(theme::RADIUS + 4.0),
-                    ..Default::default()
-                },
-                ..Default::default()
-            })
+            .style(theme::wizard_rail)
             .into()
     }
 

@@ -25,10 +25,11 @@ pub const SURFACE_RAISED: Color = color!(0x303745);
 pub const SURFACE_HOVER: Color = color!(0x343c4b);
 pub const BORDER: Color = color!(0x384050);
 pub const BORDER_STRONG: Color = color!(0x4a5366);
+pub const BORDER_HOVER: Color = color!(0x5a6478);
 pub const TEXT: Color = color!(0xf5f6f7);
 pub const TEXT_SECONDARY: Color = color!(0xb6bac2);
-pub const TEXT_MUTED: Color = color!(0x7f8693);
-pub const PLACEHOLDER: Color = color!(0x596170);
+pub const TEXT_MUTED: Color = color!(0x9097a3);
+pub const PLACEHOLDER: Color = color!(0x858d9a);
 pub const ON_AMBER: Color = color!(0x1c2430);
 
 /// Status color pair: strong tone (text/icons) and light tone (background).
@@ -92,7 +93,11 @@ pub const FONT_MONO_BOLD: Font = Font {
     ..FONT_MONO
 };
 
-pub const RADIUS: f32 = 6.0;
+// Corner scale: small and precise, like instrument bezels.
+pub const RADIUS_CHIP: f32 = 2.0;
+pub const RADIUS: f32 = 4.0;
+pub const RADIUS_PANEL: f32 = 6.0;
+pub const RADIUS_DIALOG: f32 = 8.0;
 
 pub fn theme() -> Theme {
     Theme::custom(
@@ -167,7 +172,7 @@ pub fn statusbar(_: &Theme) -> container::Style {
 pub fn panel(_: &Theme) -> container::Style {
     container::Style {
         background: Some(SURFACE.into()),
-        border: border(BORDER, 1.0, RADIUS + 2.0),
+        border: border(BORDER, 1.0, RADIUS_PANEL),
         text_color: Some(TEXT),
         ..Default::default()
     }
@@ -176,7 +181,7 @@ pub fn panel(_: &Theme) -> container::Style {
 pub fn panel_raised(_: &Theme) -> container::Style {
     container::Style {
         background: Some(SURFACE.into()),
-        border: border(BORDER, 1.0, RADIUS + 4.0),
+        border: border(BORDER, 1.0, RADIUS_DIALOG),
         shadow: Shadow {
             color: Color::from_rgba(0.0, 0.0, 0.0, 0.45),
             offset: Vector::new(0.0, 12.0),
@@ -203,9 +208,67 @@ pub fn table_header(_: &Theme) -> container::Style {
         border: Border {
             color: BORDER,
             width: 0.0,
-            radius: Radius::new(0.0).top(RADIUS + 2.0),
+            radius: Radius::new(0.0).top(RADIUS_PANEL),
         },
         text_color: Some(TEXT_SECONDARY),
+        ..Default::default()
+    }
+}
+
+/// Header band of a titled card: same raised tone as a table header.
+pub fn card_header(_: &Theme) -> container::Style {
+    container::Style {
+        background: Some(SURFACE_RAISED.into()),
+        border: Border {
+            color: BORDER,
+            width: 0.0,
+            radius: Radius::new(0.0).top(RADIUS_PANEL),
+        },
+        text_color: Some(TEXT_SECONDARY),
+        ..Default::default()
+    }
+}
+
+/// Footer band below a table (range and paging).
+pub fn table_footer(_: &Theme) -> container::Style {
+    container::Style {
+        background: Some(SURFACE_RAISED.into()),
+        border: Border {
+            color: BORDER,
+            width: 0.0,
+            radius: Radius::new(0.0).bottom(RADIUS_PANEL),
+        },
+        text_color: Some(TEXT_SECONDARY),
+        ..Default::default()
+    }
+}
+
+/// Left rail of the first-run wizard dialog.
+pub fn wizard_rail(_: &Theme) -> container::Style {
+    container::Style {
+        background: Some(SIDEBAR.into()),
+        border: Border {
+            radius: Radius::new(0.0).left(RADIUS_DIALOG),
+            ..Default::default()
+        },
+        ..Default::default()
+    }
+}
+
+/// Numbered wizard step marker. Filled once reached.
+pub fn step_marker(tint: Color, filled: bool) -> impl Fn(&Theme) -> container::Style {
+    move |_| container::Style {
+        background: Some(if filled { tint } else { SIDEBAR }.into()),
+        border: border(tint, 1.5, 999.0),
+        ..Default::default()
+    }
+}
+
+/// Solid round fill: user avatar, connection dot.
+pub fn dot(fill: Color) -> impl Fn(&Theme) -> container::Style {
+    move |_| container::Style {
+        background: Some(fill.into()),
+        border: border(Color::TRANSPARENT, 0.0, 999.0),
         ..Default::default()
     }
 }
@@ -222,7 +285,7 @@ pub fn tone_box(tone: Tone) -> impl Fn(&Theme) -> container::Style {
 pub fn badge(tone: Tone) -> impl Fn(&Theme) -> container::Style {
     move |_| container::Style {
         background: Some(tone.fill().into()),
-        border: border(tone.outline(), 1.0, 4.0),
+        border: border(tone.outline(), 1.0, RADIUS_CHIP),
         text_color: Some(tone.fg()),
         ..Default::default()
     }
@@ -231,7 +294,7 @@ pub fn badge(tone: Tone) -> impl Fn(&Theme) -> container::Style {
 pub fn accent_badge(_: &Theme) -> container::Style {
     container::Style {
         background: Some(Color { a: 0.16, ..AMBER }.into()),
-        border: border(Color { a: 0.5, ..AMBER }, 1.0, 4.0),
+        border: border(Color { a: 0.5, ..AMBER }, 1.0, RADIUS_CHIP),
         text_color: Some(AMBER),
         ..Default::default()
     }
@@ -249,7 +312,7 @@ pub fn icon_disc(tone: Color) -> impl Fn(&Theme) -> container::Style {
 pub fn tooltip(_: &Theme) -> container::Style {
     container::Style {
         background: Some(SURFACE_RAISED.into()),
-        border: border(BORDER_STRONG, 1.0, 4.0),
+        border: border(BORDER_STRONG, 1.0, RADIUS_CHIP),
         text_color: Some(TEXT),
         shadow: Shadow {
             color: Color::from_rgba(0.0, 0.0, 0.0, 0.4),
@@ -301,10 +364,16 @@ pub fn button_primary(_: &Theme, status: button::Status) -> button::Style {
 
 pub fn button_secondary(_: &Theme, status: button::Status) -> button::Style {
     match status {
-        button::Status::Active => button_base(SURFACE_RAISED, TEXT, BORDER_STRONG),
-        button::Status::Hovered => button_base(SURFACE_HOVER, TEXT, color!(0x5a6478)),
-        button::Status::Pressed => button_base(SURFACE, TEXT, BORDER_STRONG),
-        button::Status::Disabled => button_base(SURFACE, TEXT_MUTED, BORDER),
+        button::Status::Active => button::Style {
+            background: None,
+            ..button_base(Color::TRANSPARENT, TEXT, BORDER_STRONG)
+        },
+        button::Status::Hovered => button_base(SURFACE_HOVER, TEXT, BORDER_HOVER),
+        button::Status::Pressed => button_base(SURFACE_RAISED, TEXT, BORDER_STRONG),
+        button::Status::Disabled => button::Style {
+            background: None,
+            ..button_base(Color::TRANSPARENT, TEXT_MUTED, BORDER)
+        },
     }
 }
 
@@ -380,31 +449,39 @@ pub fn nav_item(active: bool) -> impl Fn(&Theme, button::Status) -> button::Styl
     }
 }
 
-/// Segmented control segment.
-pub fn segment(active: bool) -> impl Fn(&Theme, button::Status) -> button::Style {
+/// One column of the ledger summary bar. Active reads like a selected row.
+pub fn ledger_cell(active: bool) -> impl Fn(&Theme, button::Status) -> button::Style {
     move |_, status| {
-        let (background, text_color) = match (active, status) {
-            (true, _) => (AMBER, ON_AMBER),
-            (false, button::Status::Hovered) => (SURFACE_HOVER, TEXT),
-            (false, _) => (SURFACE_RAISED, TEXT_SECONDARY),
+        let background = match (active, status) {
+            (true, _) => Some(Color { a: 0.13, ..AMBER }.into()),
+            (false, button::Status::Hovered) => Some(SURFACE_HOVER.into()),
+            (false, button::Status::Pressed) => Some(SURFACE_RAISED.into()),
+            (false, _) => None,
         };
         button::Style {
-            background: Some(background.into()),
-            text_color,
-            border: border(if active { AMBER } else { BORDER_STRONG }, 1.0, 4.0),
+            background,
+            text_color: TEXT,
+            border: border(
+                if active {
+                    Color { a: 0.55, ..AMBER }
+                } else {
+                    Color::TRANSPARENT
+                },
+                if active { 1.0 } else { 0.0 },
+                0.0,
+            ),
             shadow: Shadow::default(),
             snap: true,
         }
     }
 }
 
-/// Clickable table row.
-pub fn table_row(selected: bool, zebra: bool) -> impl Fn(&Theme, button::Status) -> button::Style {
+/// Clickable table row. Rows are ruled, not striped.
+pub fn table_row(selected: bool) -> impl Fn(&Theme, button::Status) -> button::Style {
     move |_, status| {
         let background = match (selected, status) {
             (true, _) => Color { a: 0.13, ..AMBER },
             (false, button::Status::Hovered) => SURFACE_HOVER,
-            (false, _) if zebra => color!(0x2b3240),
             (false, _) => SURFACE,
         };
         button::Style {
@@ -448,7 +525,7 @@ pub fn text_input(invalid: bool) -> impl Fn(&Theme, text_input_widget::Status) -
         } else {
             match status {
                 text_input_widget::Status::Focused { .. } => AMBER,
-                text_input_widget::Status::Hovered => color!(0x5a6478),
+                text_input_widget::Status::Hovered => BORDER_HOVER,
                 _ => BORDER_STRONG,
             }
         };
@@ -478,7 +555,7 @@ pub fn pick_list(invalid: bool) -> impl Fn(&Theme, pick_list_widget::Status) -> 
         } else {
             match status {
                 pick_list_widget::Status::Opened { .. } => AMBER,
-                pick_list_widget::Status::Hovered => color!(0x5a6478),
+                pick_list_widget::Status::Hovered => BORDER_HOVER,
                 pick_list_widget::Status::Active => BORDER_STRONG,
             }
         };
@@ -501,14 +578,14 @@ pub fn checkbox(_: &Theme, status: checkbox_widget::Status) -> checkbox_widget::
     let border_color = if is_checked {
         AMBER
     } else if hovered {
-        color!(0x5a6478)
+        BORDER_HOVER
     } else {
         BORDER_STRONG
     };
     checkbox_widget::Style {
         background: if is_checked { AMBER } else { PRIMARY_DARK }.into(),
         icon_color: ON_AMBER,
-        border: border(border_color, 1.0, 4.0),
+        border: border(border_color, 1.0, RADIUS_CHIP),
         text_color: Some(if disabled { TEXT_MUTED } else { TEXT }),
     }
 }
@@ -517,7 +594,7 @@ pub fn checkbox(_: &Theme, status: checkbox_widget::Status) -> checkbox_widget::
 pub fn switcher(_: &Theme, status: pick_list_widget::Status) -> pick_list_widget::Style {
     let border_color = match status {
         pick_list_widget::Status::Opened { .. } => AMBER,
-        pick_list_widget::Status::Hovered => color!(0x5a6478),
+        pick_list_widget::Status::Hovered => BORDER_HOVER,
         pick_list_widget::Status::Active => BORDER,
     };
     pick_list_widget::Style {

@@ -1,6 +1,6 @@
 //! Dense data table with sortable headers and selectable rows.
 
-use iced::widget::{button, container, row, text};
+use iced::widget::{self, button, column, container, row, rule, text};
 use iced::{Alignment, Element, Length, Padding, alignment::Horizontal};
 use yaams_api::SortDirection;
 
@@ -91,14 +91,20 @@ pub fn data_row<'a, M: Clone + 'a, S: Copy>(
     columns: &[Column<S>],
     cells: Vec<Element<'a, M>>,
     selected: bool,
-    zebra: bool,
     on_press: M,
 ) -> Element<'a, M> {
     let cells = columns.iter().zip(cells).map(|(column, content)| cell(content, column));
     button(row(cells).align_y(Alignment::Center).height(Length::Fixed(ROW_HEIGHT)))
         .padding(0)
         .width(Length::Fill)
-        .style(theme::table_row(selected, zebra))
+        .style(theme::table_row(selected))
         .on_press(on_press)
         .into()
+}
+
+/// Stacks rows ledger-style, with a hairline rule under each one.
+pub fn ruled<'a, M: 'a>(rows: impl IntoIterator<Item = Element<'a, M>>) -> widget::Column<'a, M> {
+    rows.into_iter().fold(column![], |col, row| {
+        col.push(row).push(rule::horizontal(1).style(theme::divider))
+    })
 }

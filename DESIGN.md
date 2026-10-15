@@ -7,14 +7,13 @@ colors:
   console-slate: "#282e3a"
   console-slate-raised: "#303745"
   console-slate-hover: "#343c4b"
-  table-zebra: "#2b3240"
   ledger-line: "#384050"
   ledger-line-strong: "#4a5366"
   ledger-line-hover: "#5a6478"
   text-primary: "#f5f6f7"
   text-secondary: "#b6bac2"
-  text-muted: "#7f8693"
-  text-placeholder: "#596170"
+  text-muted: "#9097a3"
+  text-placeholder: "#858d9a"
   dispatch-amber: "#e8a53f"
   dispatch-amber-hover: "#f0b456"
   dispatch-amber-pressed: "#cf8f2e"
@@ -79,10 +78,10 @@ typography:
     fontSize: "10px"
     fontWeight: 700
 rounded:
-  chip: "4px"
-  control: "6px"
-  panel: "8px"
-  dialog: "10px"
+  chip: "2px"
+  control: "4px"
+  panel: "6px"
+  dialog: "8px"
   pill: "999px"
 spacing:
   xs: "4px"
@@ -106,7 +105,6 @@ components:
   button-primary-disabled:
     backgroundColor: "{colors.amber-umber}"
   button-secondary:
-    backgroundColor: "{colors.console-slate-raised}"
     textColor: "{colors.text-primary}"
     typography: "{typography.body-strong}"
     rounded: "{rounded.control}"
@@ -141,14 +139,13 @@ components:
   nav-item-active:
     textColor: "{colors.dispatch-amber}"
     typography: "{typography.body-strong}"
-  segment-active:
-    backgroundColor: "{colors.dispatch-amber}"
-    textColor: "{colors.on-amber}"
-    rounded: "{rounded.chip}"
-  segment:
-    backgroundColor: "{colors.console-slate-raised}"
-    textColor: "{colors.text-secondary}"
-    rounded: "{rounded.chip}"
+  ledger-cell:
+    textColor: "{colors.text-primary}"
+    typography: "{typography.label}"
+    padding: "0 16px"
+    height: "52px"
+  ledger-cell-hover:
+    backgroundColor: "{colors.console-slate-hover}"
   status-chip:
     typography: "{typography.chip}"
     rounded: "{rounded.chip}"
@@ -157,6 +154,12 @@ components:
     textColor: "{colors.text-primary}"
     rounded: "{rounded.control}"
     padding: "10px 14px"
+  card-header:
+    backgroundColor: "{colors.console-slate-raised}"
+    textColor: "{colors.text-secondary}"
+    typography: "{typography.label}"
+    padding: "0 18px"
+    height: "36px"
   panel:
     backgroundColor: "{colors.console-slate}"
     textColor: "{colors.text-primary}"
@@ -193,7 +196,7 @@ The world is dark and dense. A near-black slate ground (`ops-night`) carries sli
 The app takes a hobby and plays it straight. It should read like real airline operations software: UTC everywhere with a `Z` suffix, uppercase captions, exact figures, no illustrations, no gamified flourishes.
 
 **Key Characteristics:**
-- Dark tonal ledger: three close slate steps plus 1px rules carry all structure.
+- Dark tonal ledger: three close slate steps plus 1px rules carry all structure; lists are ruled, not striped.
 - One amber voice for active, selected and primary.
 - Monospaced data, sans-serif prose, geometric display headings.
 - Status as annotation: translucent chips and banners, never solid blocks.
@@ -204,7 +207,7 @@ The app takes a hobby and plays it straight. It should read like real airline op
 A cool, blue-grey slate night palette with one warm amber signal and four muted status tones.
 
 ### Primary
-- **Dispatch Amber** (`dispatch-amber`): the only accent. Logo, primary button, active nav entry (text on a 14% amber wash), selected table row (13% wash plus 55% amber outline), focused input border, active segment, active sort chevron, flight numbers in tables and the detail header. Hover lightens to `dispatch-amber-hover`, pressed darkens to `dispatch-amber-pressed`; disabled primary sinks to **Amber Umber** (`amber-umber`) with greyed text. **Amber Bronze** (`amber-bronze`) is the pressed border.
+- **Dispatch Amber** (`dispatch-amber`): the only accent. Logo, primary button, active nav entry (text on a 14% amber wash), selected table row (13% wash plus 55% amber outline), focused input border, active summary cell, active sort chevron, flight numbers in tables and the detail header. Hover lightens to `dispatch-amber-hover`, pressed darkens to `dispatch-amber-pressed`; disabled primary sinks to **Amber Umber** (`amber-umber`) with greyed text. **Amber Bronze** (`amber-bronze`) is the pressed border.
 - **On-Amber Ink** (`on-amber`): text and icons placed on solid amber. Never use white on amber.
 
 ### Neutral
@@ -212,9 +215,9 @@ A cool, blue-grey slate night palette with one warm amber signal and four muted 
 - **Sidebar Slate** (`ops-sidebar`): sidebar and status bar - the darkest step, framing the work area.
 - **Console Slate** (`console-slate`): panels, cards, table body.
 - **Raised Slate** (`console-slate-raised`): table header, secondary buttons, menus, tooltips, toasts.
-- **Hover Slate** (`console-slate-hover`): hover fill for rows, ghost and secondary buttons. **Zebra Slate** (`table-zebra`) stripes alternate rows.
-- **Ledger Line** (`ledger-line`): default 1px rules and panel borders. **Strong Line** (`ledger-line-strong`) borders controls at rest; **Hover Line** (`ledger-line-hover`) borders controls on hover.
-- **Text ramp**: `text-primary` for values and titles, `text-secondary` for body copy and inactive nav, `text-muted` for captions and hints, `text-placeholder` for input placeholders.
+- **Hover Slate** (`console-slate-hover`): hover fill for rows, summary cells, ghost and secondary buttons.
+- **Ledger Line** (`ledger-line`): default 1px rules, panel borders, the hairline under every table row and card header, and the vertical rules between summary cells. **Strong Line** (`ledger-line-strong`) borders controls at rest; **Hover Line** (`ledger-line-hover`) borders controls on hover.
+- **Text ramp**: `text-primary` for values and titles, `text-secondary` for body copy and inactive nav, `text-muted` for captions and hints (at least 4.5:1 on Console Slate), `text-placeholder` for input placeholders (at least 4.5:1 on Ops Night).
 
 ### Status tones
 Each tone is a pair: a strong colour and a light colour. On the dark UI the **light** tone is the foreground (text, icons); the **strong** tone is used at 18% alpha as fill and 55% alpha as outline.
@@ -225,7 +228,7 @@ Each tone is a pair: a strong colour and a light colour. On the dark UI the **li
 - **Neutral / unknown status** (`neutral-status`, `neutral-status-light`)
 
 ### Named Rules
-**The One Amber Rule.** Amber means "this is active, selected, or the action that matters". At most one solid amber button per view; everything else amber is text, outline or a translucent wash.
+**The One Amber Rule.** Amber means "this is active, selected, or the action that matters". Solid amber is reserved for the primary action, at most one per view. Selection and active filters are a 13-14% amber wash with a 55% amber outline and amber text, never a solid fill.
 
 **The Annotation Rule.** Status colour never fills a large surface. It appears as a chip, a banner, an icon disc or a field-error line, always translucent fill plus outline plus light-tone text.
 
@@ -261,6 +264,7 @@ A fixed desktop shell, default window 1440x900, minimum 1180x720. No responsive 
 - **Sidebar** (236px fixed, `ops-sidebar`): brand lockup on top, nav grouped under uppercase captions (Operations, Airline, Instance) with 22px between groups and 2px between items, Settings and the user card pinned to the bottom.
 - **Top bar** (`ops-night`, 12px x 24px padding): breadcrumb caption + page headline on the left; airline switcher, role chip, profile switcher, UTC clock and refresh on the right, controls 40px tall.
 - **Content** (20px x 24px padding, 16px vertical rhythm): stat cards, filter toolbar, then a table with an optional detail panel on the right, or a form column with a sticky summary column.
+- **Summary bar** (flight log): one 52px ruled strip of status totals directly under the top bar; each cell is also the status filter.
 - **Status bar** (`ops-sidebar`, 5px x 14px): connection dot, instance, versions, latency, sync time, URL - all in 11px mono separated by `|` rules.
 - **Spacing scale:** 4, 8, 12, 16, 24px. Inside panels 16-18px padding, between fields 6px (label to input), between controls 8-10px.
 
@@ -281,51 +285,51 @@ The system is flat. Surfaces at rest are separated by tonal steps (sidebar darke
 
 ## Shapes
 
-Small, consistent radii and 1px strokes everywhere - the look of ruled paper and instrument bezels, not soft consumer cards.
+Tight radii and 1px strokes everywhere - the look of ruled paper and instrument bezels, not soft consumer cards.
 
-- **Chip corner** (4px): status and role chips, segments, checkboxes, tooltips, scrollbar thumbs.
-- **Control corner** (6px): buttons, inputs, pick lists, menus, nav items, banners, toasts, wells.
-- **Panel corner** (8px): panels, cards and the table header's top edge.
-- **Dialog corner** (10px): the floating wizard card.
+- **Chip corner** (2px): status and role chips, checkboxes, tooltips, scrollbar thumbs.
+- **Control corner** (4px): buttons, inputs, pick lists, menus, nav items, banners, toasts, wells.
+- **Panel corner** (6px): panels, cards, the summary bar, and the top edge of table and card header bands.
+- **Dialog corner** (8px): the floating wizard card.
 - **Pill** (999px): icon discs, avatar, scroll-to-end button, status dot.
-- Table rows are square; a selected row gains a 1px amber outline, no rounding.
+- Table rows and summary cells are square; selection gains a 1px amber outline, no rounding.
 
 ## Components
 
 ### Buttons
 Instrument-precise: compact, 1px bordered, bold 13px label with an optional 14px leading Lucide icon (8px gap), 8px x 14px padding.
 - **Primary:** solid Dispatch Amber with On-Amber Ink. Lighter on hover, darker on press, umber when disabled.
-- **Secondary:** Raised Slate with a Strong Line border and primary text; Hover Slate on hover.
+- **Secondary:** a ruled outline - no fill, Strong Line border, primary text. Hover fills Hover Slate with a Hover Line border; pressed fills Raised Slate.
 - **Danger:** translucent red (15%) with a 60% red border and light-red text; turns solid red with white text on hover.
 - **Ghost:** borderless icon button (16px icon, 7px padding) in `text-secondary`; Hover Slate fill on hover; always paired with a tooltip.
 - **Link:** amber text, no chrome, lighter amber on hover.
 
-### Segmented control
-Separate 4px-radius segments (4px apart, 7px x 12px padding, 12px bold label) for status filters. Active segment is solid amber with ink text; inactive segments are Raised Slate with secondary text.
+### Ledger summary bar
+One Console Slate panel, 52px tall, split into equal cells by vertical Ledger Line rules. Each cell: 14px tone icon, uppercase caption, then the figure right-aligned in 20px bold mono. The cell is the status filter: hover fills Hover Slate; the active cell gets the selection treatment (amber wash, amber outline, amber figure, caption brightened to primary text). Replaces both stat tiles and segmented filters - never show the same status twice.
 
 ### Chips
-Uppercase 10px bold mono, 2px x 7px padding, 4px radius, translucent tone fill + outline + light-tone text. Status mapping: Pending = warning, Accepted = success, Rejected = danger, other = neutral. The amber variant marks roles and highlights.
+Uppercase 10px bold mono, 2px x 7px padding, 2px radius, translucent tone fill + outline + light-tone text. Status mapping: Pending = warning, Accepted = success, Rejected = danger, other = neutral. The amber variant marks roles and highlights.
 
 ### Cards / Containers
-- **Panel:** Console Slate, 1px Ledger Line, 8px radius, 18px padding, no shadow. A titled card leads with a 14px amber icon and an uppercase caption.
-- **Stat card:** panel with a 40px icon disc tinted by its tone, uppercase caption and a large figure; the active filter's card gets an amber border.
-- **Well:** Ops Night with a 1px Ledger Line, 6px radius - for route strings, departure/arrival blocks and code boxes inside panels.
+- **Panel:** Console Slate, 1px Ledger Line, 6px radius, no shadow.
+- **Titled card:** a 36px Raised Slate header band (14px amber icon + uppercase caption, 18px side padding), a hairline rule, then content at 18px padding - the same anatomy as a table header over its rows.
+- **Well:** Ops Night with a 1px Ledger Line, 4px radius - for route strings, departure/arrival blocks and code boxes inside panels.
 
 ### Inputs / Fields
-- **Style:** Ops Night fill, 1px Strong Line border, 6px radius, 13px text, `text-placeholder` placeholders. Code-like inputs (ICAO, times, routes) use mono.
+- **Style:** Ops Night fill, 1px Strong Line border, 4px radius, 13px text, `text-placeholder` placeholders. Code-like inputs (ICAO, times, routes) use mono.
 - **Focus:** border turns amber; selection is 35% amber.
 - **Hover:** border lightens to Hover Line.
 - **Error:** border turns danger red; a 12px alert icon plus light-red message sits under the field in place of the hint.
 - **Field anatomy:** uppercase label, 6px gap, input, then hint (muted) or error.
 
 ### Navigation
-Sidebar items: 16px icon + 13px label, 9px x 12px padding, 6px radius. Inactive is secondary text; hover fills Console Slate; active is amber text and icon (bold label) on a 14% amber wash. Unimplemented areas show a muted mono "SOON" marker. Entries the user lacks abilities for are hidden.
+Sidebar items: 16px icon + 13px label, 9px x 12px padding, 4px radius. Inactive is secondary text; hover fills Console Slate; active is amber text and icon (bold label) on a 14% amber wash. Unimplemented areas show a muted mono "SOON" marker. Entries the user lacks abilities for are hidden.
 
 ### Data table
-The signature component. Raised Slate header (36px) with uppercase 11px captions and sort chevrons (amber when active), 38px rows alternating Console Slate and Zebra Slate, 12px horizontal cell padding, numbers right-aligned. Flight numbers in bold amber mono, other data in mono. Hover fills Hover Slate; selection is a 13% amber wash with a 1px amber outline. A footer carries the range ("1-3 of 3"), rows-per-page pick list and first/prev/page/next/last ghost buttons.
+The signature component. Raised Slate header (36px) with uppercase 11px captions and sort chevrons (amber when active), 38px Console Slate rows ruled off by a hairline Ledger Line (no zebra striping), 12px horizontal cell padding, numbers right-aligned. Flight numbers in bold amber mono, other data in mono. Hover fills Hover Slate; selection is a 13% amber wash with a 1px amber outline. A Raised Slate footer band carries the range ("1-3 of 3"), rows-per-page pick list and first/prev/page/next/last ghost buttons.
 
 ### Banners and toasts
-- **Banner:** full-width tone box (translucent fill, 1px tone outline, 6px radius, 10px x 14px padding) with a 16px tone icon, bold title and 12px secondary message, optional trailing action.
+- **Banner:** full-width tone box (translucent fill, 1px tone outline, 4px radius, 10px x 14px padding) with a 16px tone icon, bold title and 12px secondary message, optional trailing action.
 - **Toast:** 360px, Raised Slate tinted 12% toward the tone, tone outline, toast shadow, stacked bottom-right (max 4, 10px apart). Success and info expire after 6 seconds; errors stay until dismissed.
 
 ### Flight strip
@@ -344,12 +348,15 @@ Centered column, max 460px: 72px tinted icon disc, 20px title, 14px secondary me
 - **Do** show status as translucent chips and banners using the light tone as foreground.
 - **Do** give every nav item and primary action a Lucide icon.
 - **Do** use uppercase 11px bold captions for labels and section titles.
+- **Do** rule lists and tables with hairlines; let a status filter and its totals be the same control.
 
 ### Don't:
 - **Don't** put shadows on panels, cards, tables or buttons; shadows are for floating layers only.
 - **Don't** introduce a second accent colour or use status colours for decoration.
 - **Don't** use white text on amber; use On-Amber Ink.
 - **Don't** fill large areas with a status colour.
+- **Don't** use solid amber for selection or an active filter; solid amber is for the primary action.
+- **Don't** build hero-metric stat tiles or zebra-striped tables.
 - **Don't** use variable font files or add font families beyond the three embedded ones.
 - **Don't** show local time anywhere.
 - **Don't** add illustrations, gradients or playful ornament; the ledger plays it straight.
