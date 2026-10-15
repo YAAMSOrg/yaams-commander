@@ -1,4 +1,4 @@
-use std::time::Duration;
+use std::time::{Duration, Instant};
 
 use reqwest::{Method, RequestBuilder, header};
 use serde::{Serialize, de::DeserializeOwned};
@@ -152,9 +152,29 @@ impl Client {
     }
 
     async fn send<T: DeserializeOwned>(&self, request: RequestBuilder) -> Result<T> {
-        let response = request.send().await.map_err(ApiError::from_reqwest)?;
+        let request = request.build().map_err(ApiError::from_reqwest)?;
+        // The token only travels in a header, so method and URL are safe to log.
+        let line = format!("{} {}", request.method(), request.url());
+        log::debug!("HTTP {line}");
+        let started = Instant::now();
+        let response = match self.http.execute(request).await {
+            Ok(response) => response,
+            Err(e) => {
+                let error = ApiError::from_reqwest(e);
+                log::debug!(
+                    "HTTP {line} -> failed after {} ms: {error}",
+                    started.elapsed().as_millis()
+                );
+                return Err(error);
+            }
+        };
         let status = response.status();
         let body = response.text().await.map_err(ApiError::from_reqwest)?;
+        log::debug!(
+            "HTTP {line} -> {status} ({} bytes, {} ms)",
+            body.len(),
+            started.elapsed().as_millis()
+        );
         if !status.is_success() {
             return Err(ApiError::from_status(status.as_u16(), &body));
         }

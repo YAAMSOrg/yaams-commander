@@ -6,6 +6,7 @@ mod assets;
 mod config;
 mod format;
 mod icons;
+mod logging;
 mod screens;
 mod theme;
 mod validation;
@@ -17,6 +18,8 @@ mod ui_tests;
 use iced::{Size, window};
 
 fn main() -> iced::Result {
+    logging::init();
+    log::debug!("YAAMS Commander {} starting", env!("CARGO_PKG_VERSION"));
     let mut application = iced::application(app::App::new, app::App::update, app::App::view)
         .title(app::App::title)
         .subscription(app::App::subscription)

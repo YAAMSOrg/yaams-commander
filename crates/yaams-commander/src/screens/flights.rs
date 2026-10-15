@@ -148,6 +148,7 @@ impl Flights {
         self.loading = true;
         let request = self.request;
         let airline_id = ctx.airline.id;
+        log::debug!("Loading flights of airline {airline_id}, page {}", self.query.page);
 
         let client = ctx.client.clone();
         let query = self.query.clone();
@@ -217,11 +218,19 @@ impl Flights {
             Message::Refresh => return self.load(ctx),
             Message::Loaded(request, result, elapsed) => {
                 if request != self.request {
+                    log::debug!("Ignoring stale flights response");
                     return Task::none();
                 }
                 self.loading = false;
                 match result {
                     Ok(page) => {
+                        log::debug!(
+                            "Loaded {} flight(s), page {} of {} ({} total)",
+                            page.data.len(),
+                            page.meta.current_page,
+                            page.meta.last_page,
+                            page.meta.total
+                        );
                         events.push(Event::Synced(elapsed));
                         // A page beyond the end (e.g. after filtering) - jump to the last one.
                         if page.data.is_empty() && page.meta.current_page > page.meta.last_page.max(1) {
@@ -239,6 +248,7 @@ impl Flights {
                         self.page = Some(page);
                     }
                     Err(e) => {
+                        log::debug!("Loading flights failed: {e}");
                         if e.is_unauthorized() {
                             events.push(Event::Unauthorized);
                         } else if self.page.is_some() {

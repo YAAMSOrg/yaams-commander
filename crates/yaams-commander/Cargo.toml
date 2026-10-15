@@ -9,6 +9,7 @@ rust-version.workspace = true
 [dependencies]
 yaams-api.workspace = true
 chrono.workspace = true
+log.workspace = true
 serde.workspace = true
 tokio.workspace = true
 dirs = "7"

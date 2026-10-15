@@ -5926,6 +5926,7 @@ name = "yaams-api"
 version = "0.1.0"
 dependencies = [
  "chrono",
+ "log",
  "reqwest",
  "serde",
  "serde_json",
@@ -5943,6 +5944,7 @@ dependencies = [
  "dirs",
  "iced",
  "iced_test",
+ "log",
  "lucide-icons",
  "open",
  "serde",

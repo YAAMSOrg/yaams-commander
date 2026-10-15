@@ -159,6 +159,7 @@ impl Wizard {
                 self.busy = false;
                 match result {
                     Ok((base_url, info)) if info.api_version == "v1" => {
+                        log::debug!("Wizard: found {} {} at {base_url}", info.name, info.version);
                         self.base_url = Some(base_url);
                         if self.name.is_empty() {
                             self.name = info.name.clone();
@@ -169,12 +170,14 @@ impl Wizard {
                         }
                     }
                     Ok((_, info)) => {
+                        log::debug!("Wizard: unsupported API version {}", info.api_version);
                         self.error = Some(format!(
                             "This instance speaks API {}, but YAAMS Commander requires v1.",
                             info.api_version
                         ));
                     }
                     Err(e) => {
+                        log::debug!("Wizard: instance check failed: {e}");
                         let mut error = e.to_string();
                         if !self.accept_invalid_certs && error.to_lowercase().contains("certificate") {
                             error.push_str(" If the instance uses a self-signed certificate, allow it below.");
@@ -198,6 +201,7 @@ impl Wizard {
                 self.busy = false;
                 match result {
                     Ok(user) => {
+                        log::debug!("Wizard: token belongs to '{}'", user.name);
                         let previous = self.editing.as_ref().and_then(|p| p.last_airline_id);
                         let choices = airline_choices(&user);
                         self.airline = choices
@@ -209,9 +213,13 @@ impl Wizard {
                         self.step = Step::Profile;
                     }
                     Err(ApiError::Unauthorized) => {
+                        log::debug!("Wizard: token rejected (401)");
                         self.error = Some("The instance rejected this token. Check that it was copied completely and has not been revoked.".into());
                     }
-                    Err(e) => self.error = Some(e.to_string()),
+                    Err(e) => {
+                        log::debug!("Wizard: token check failed: {e}");
+                        self.error = Some(e.to_string());
+                    }
                 }
                 Outcome::None
             }
@@ -282,6 +290,7 @@ impl Wizard {
         };
         self.busy = true;
         let base = client.base_url().to_string();
+        log::debug!("Wizard: checking instance at {base}");
         Task::perform(
             async move { client.instance_info().await.map(|info| (base, info)) },
             Message::InfoLoaded,
@@ -304,6 +313,7 @@ impl Wizard {
             }
         };
         self.busy = true;
+        log::debug!("Wizard: verifying token");
         Task::perform(async move { client.current_user().await }, Message::UserLoaded)
     }
 

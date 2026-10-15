@@ -255,8 +255,12 @@ impl PirepForm {
             Message::AircraftLoaded(airline_id, result) => {
                 if airline_id == self.airline_id {
                     match result {
-                        Ok(list) => self.fleet = Fleet::Loaded(list),
+                        Ok(list) => {
+                            log::debug!("Loaded {} active aircraft of airline {airline_id}", list.len());
+                            self.fleet = Fleet::Loaded(list);
+                        }
                         Err(e) => {
+                            log::debug!("Loading aircraft of airline {airline_id} failed: {e}");
                             if e.is_unauthorized() {
                                 events.push(Event::Unauthorized);
                             }
@@ -270,8 +274,10 @@ impl PirepForm {
                 self.attempted = true;
                 self.server_error = None;
                 let Some(pirep) = self.validate(ctx) else {
+                    log::debug!("PIREP not submitted: {} field(s) invalid", self.errors.len());
                     return Task::none();
                 };
+                log::debug!("Submitting PIREP to airline {}", self.airline_id);
                 self.submitting = true;
                 let client = ctx.client.clone();
                 let airline_id = self.airline_id;
@@ -298,6 +304,7 @@ impl PirepForm {
                         self.errors.clear();
                     }
                     Err(ApiError::Validation { message, errors }) => {
+                        log::debug!("PIREP rejected by server validation: {message}");
                         for field in Field::ALL {
                             if let Some(msg) = errors.get(field.api_key()).and_then(|m| m.first()) {
                                 self.errors.insert(field, msg.clone());
@@ -307,6 +314,7 @@ impl PirepForm {
                     }
                     Err(ApiError::Unauthorized) => events.push(Event::Unauthorized),
                     Err(e) => {
+                        log::debug!("Filing PIREP failed: {e}");
                         events.push(Event::Toast(Kind::Error, "PIREP not filed".into(), e.to_string()));
                         self.server_error = Some(e.to_string());
                     }

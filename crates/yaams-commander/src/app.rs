@@ -177,6 +177,11 @@ impl Session {
         let conn = if client.is_some() {
             Conn::Connecting
         } else {
+            log::debug!(
+                "Invalid instance URL in profile '{}': {}",
+                profile.name,
+                profile.base_url
+            );
             Conn::Offline("The instance URL of this profile is invalid.".into())
         };
         Self {
@@ -207,6 +212,7 @@ impl Session {
             self.conn = Conn::Connecting;
         }
         let generation = self.generation;
+        log::debug!("Syncing instance info, user and online networks (generation {generation})");
         Task::perform(
             timed(async move {
                 let (info, user, networks) =
@@ -272,6 +278,10 @@ impl Session {
     /// Prepares the data of the current page.
     fn enter_page(&mut self) -> Task<Message> {
         if !self.can_open(self.page) {
+            log::debug!(
+                "Page {:?} not available with current abilities, showing flights",
+                self.page
+            );
             self.page = Page::Flights;
         }
         match self.page {
@@ -316,8 +326,13 @@ impl App {
     }
 
     pub fn with_store(store: Store) -> (Self, Task<Message>) {
+        log::debug!("Loading configuration from {}", store.path().display());
         let loaded = store.load();
+        if let Some(notice) = &loaded.notice {
+            log::debug!("Configuration problem: {notice}");
+        }
         let config = loaded.config;
+        log::debug!("{} profile(s) configured", config.profiles.len());
         let mut app = Self {
             store,
             mode: Mode::Wizard {
@@ -330,7 +345,10 @@ impl App {
         };
         let task = match app.config.active().cloned() {
             Some(profile) => app.start_session(profile),
-            None => Task::none(),
+            None => {
+                log::debug!("No active profile, starting the setup wizard");
+                Task::none()
+            }
         };
         (app, task)
     }
@@ -360,6 +378,16 @@ impl App {
     }
 
     fn start_session(&mut self, profile: Profile) -> Task<Message> {
+        log::debug!(
+            "Starting session for profile '{}' at {}{}",
+            profile.name,
+            profile.base_url,
+            if profile.accept_invalid_certs {
+                " (TLS certificate verification disabled)"
+            } else {
+                ""
+            }
+        );
         let mut session = Session::new(profile, self.config.ui.per_page);
         session.airline_id = session.profile.last_airline_id;
         let task = session.connect();
@@ -368,12 +396,15 @@ impl App {
     }
 
     fn save_config(&mut self) {
+        log::debug!("Saving configuration to {}", self.store.path().display());
         if let Err(e) = self.store.save(&self.config) {
+            log::debug!("Saving configuration failed: {e}");
             self.toasts.push(Kind::Error, "Settings not saved", e);
         }
     }
 
     fn open_url(&mut self, url: &str) {
+        log::debug!("Opening {url} in the system handler");
         if let Err(e) = open::that_detached(url) {
             self.toasts.push(Kind::Error, "Could not open browser", e.to_string());
         }
@@ -437,6 +468,7 @@ impl App {
             }
             wizard::Outcome::Finished(profile) => {
                 let name = profile.name.clone();
+                log::debug!("Setup wizard finished, saving profile '{name}'");
                 self.config.upsert_profile(profile.clone());
                 self.save_config();
                 self.toasts
@@ -455,12 +487,22 @@ impl App {
         match message {
             Message::Connected(generation, result, elapsed) => {
                 if generation != session.generation {
+                    log::debug!("Ignoring stale sync result (generation {generation})");
                     return Task::none();
                 }
                 match result {
                     Ok(bundle) => {
                         events.push(Event::Synced(elapsed));
                         let Bundle { info, user, networks } = *bundle;
+                        log::debug!(
+                            "Synced in {} ms: {} {}, user '{}' with {} airline(s), {} online network(s)",
+                            elapsed.as_millis(),
+                            info.name,
+                            info.version,
+                            user.name,
+                            user.airlines.len(),
+                            networks.len()
+                        );
                         session.info = Some(info);
                         session.networks = networks;
                         let previous = session.user.replace(user);
@@ -469,6 +511,7 @@ impl App {
                         // Keep the airline if still a member, else pick the first membership.
                         if session.airline().is_none() {
                             let first = session.member_airlines().next().map(|a| a.id);
+                            log::debug!("Selecting first member airline: {first:?}");
                             session.airline_id = first;
                             session.flights.reset();
                             session.pirep = None;
@@ -480,16 +523,19 @@ impl App {
                         session.enter_page()
                     }
                     Err(ApiError::Unauthorized) => {
+                        log::debug!("Sync failed: token rejected (401)");
                         session.conn = Conn::Unauthorized;
                         Task::none()
                     }
                     Err(e) => {
+                        log::debug!("Sync failed, now offline: {e}");
                         session.conn = Conn::Offline(e.to_string());
                         Task::none()
                     }
                 }
             }
             Message::Navigate(page) => {
+                log::debug!("Navigating to {page:?}");
                 session.confirm_remove = None;
                 if session.can_open(page) {
                     session.page = page;
@@ -500,6 +546,7 @@ impl App {
                 if session.airline_id == Some(choice.id) {
                     return Task::none();
                 }
+                log::debug!("Switching to airline {}", choice.id);
                 session.airline_id = Some(choice.id);
                 session.flights.reset();
                 session.pirep = None;
@@ -515,6 +562,7 @@ impl App {
                 Task::none()
             }
             Message::Refresh => {
+                log::debug!("Manual refresh");
                 session.flights.reset();
                 session.connect()
             }
@@ -591,6 +639,7 @@ impl App {
             match event {
                 Event::Toast(kind, title, message) => self.toasts.push(kind, title, message),
                 Event::Unauthorized => {
+                    log::debug!("Token rejected by the instance (401)");
                     if let Mode::Main(session) = &mut self.mode {
                         session.conn = Conn::Unauthorized;
                     }
@@ -605,6 +654,7 @@ impl App {
                     }
                 }
                 Event::PirepFiled(flight) => {
+                    log::debug!("PIREP {} filed with id {}", flight.full_flight_number, flight.id);
                     let status = flight.status.name.clone();
                     self.toasts.push(
                         Kind::Success,
@@ -638,12 +688,14 @@ impl App {
                     if current != Some(id)
                         && let Some(profile) = self.config.profiles.iter().find(|p| p.id == id).cloned()
                     {
+                        log::debug!("Switching to profile '{}'", profile.name);
                         self.config.active_profile = Some(id);
                         self.save_config();
                         tasks.push(self.start_session(profile));
                     }
                 }
                 Event::AddProfile => {
+                    log::debug!("Opening the setup wizard to add a profile");
                     let previous = self.take_session();
                     self.mode = Mode::Wizard {
                         wizard: Box::new(wizard::Wizard::new(true, None)),
@@ -652,6 +704,7 @@ impl App {
                 }
                 Event::UpdateToken(id) => {
                     if let Some(profile) = self.config.profiles.iter().find(|p| p.id == id).cloned() {
+                        log::debug!("Opening the setup wizard to update the token of '{}'", profile.name);
                         let (wizard, task) = wizard::Wizard::update_token(profile);
                         let previous = self.take_session();
                         self.mode = Mode::Wizard {
@@ -669,6 +722,7 @@ impl App {
                         .find(|p| p.id == id)
                         .map(|p| p.name.clone())
                         .unwrap_or_default();
+                    log::debug!("Removing profile '{name}'");
                     self.config.remove_profile(id);
                     self.save_config();
                     self.toasts.push(

@@ -18,6 +18,7 @@ crates/yaams-api/         API client: models, errors, pagination. No UI dependen
 crates/yaams-commander/   Iced desktop app
   src/app.rs              Application state, Message, update/view, subscriptions
   src/config.rs           Profiles, load/save, per-OS paths, file permissions
+  src/logging.rs          stdout logger (DEBUG: prefix, own crates only)
   src/theme.rs            Palette, custom theme, widget styles
   src/icons.rs            Lucide icon font helpers
   src/widgets/            Table, badges, sidebar, top bar, status bar, form fields, toasts
@@ -98,4 +99,5 @@ Single TOML file holding all profiles (URL, token, preferences). Token lives in 
 - Prefer quality, simplicity, robustness and maintainability over development cost.
 - Keep `yaams-api` free of UI code; keep validation rules that mirror the server in one place and unit-test them.
 - `cargo fmt` and clippy with `-D warnings` must pass.
+- New features and background work must emit debug messages via `log::debug!` (printed to stdout with a `DEBUG:` prefix by `src/logging.rs`): what is loaded, saved, switched, succeeded or failed. Every HTTP call goes through `Client::send`, which already logs it - keep it that way. Never log tokens.
 
