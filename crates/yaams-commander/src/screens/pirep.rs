@@ -199,7 +199,7 @@ impl PirepForm {
                     .to_uppercase()
                     .chars()
                     .filter(char::is_ascii_alphanumeric)
-                    .take(6)
+                    .take(4)
                     .collect();
                 i.callsign_edited = !i.callsign.is_empty();
             }

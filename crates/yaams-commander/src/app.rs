@@ -18,6 +18,40 @@ use crate::widgets::{action, badge, banner, caption, empty_state, heading, icon_
 
 const SIDEBAR_WIDTH: f32 = 236.0;
 
+/// Global keyboard shortcuts:
+/// - Tab / Shift+Tab move focus between inputs (only when no widget used the key).
+/// - F5 and Ctrl+R (Cmd+R on macOS) refresh from the API, even while an input
+///   has focus.
+fn shortcut(event: iced::Event, status: iced::event::Status, _window: iced::window::Id) -> Option<Message> {
+    use iced::keyboard::{Event, Key, key::Named};
+
+    let iced::Event::Keyboard(Event::KeyPressed {
+        key,
+        modifiers,
+        physical_key,
+        ..
+    }) = event
+    else {
+        return None;
+    };
+    match key.as_ref() {
+        Key::Named(Named::Tab) if status == iced::event::Status::Ignored => Some(if modifiers.shift() {
+            Message::FocusPrevious
+        } else {
+            Message::FocusNext
+        }),
+        Key::Named(Named::F5) if modifiers.is_empty() => Some(Message::RefreshShortcut),
+        _ if modifiers.command()
+            && !modifiers.alt()
+            && !modifiers.shift()
+            && key.to_latin(physical_key) == Some('r') =>
+        {
+            Some(Message::RefreshShortcut)
+        }
+        _ => None,
+    }
+}
+
 pub struct App {
     store: Store,
     config: Config,
@@ -38,12 +72,17 @@ enum Mode {
 #[derive(Debug, Clone)]
 pub enum Message {
     Tick,
+    /// Tab / Shift+Tab: move keyboard focus to the next / previous input.
+    FocusNext,
+    FocusPrevious,
     Wizard(wizard::Message),
     Connected(u64, Result<Box<Bundle>, ApiError>, Duration),
     Navigate(Page),
     AirlineSelected(Choice<u64>),
     ProfileSelected(Choice<Uuid>),
     Refresh,
+    /// F5 / Ctrl+R / Cmd+R: refresh unless a connection is already running.
+    RefreshShortcut,
     Flights(flights::Message),
     Pirep(pirep::Message),
     Settings(settings::Message),
@@ -171,6 +210,11 @@ struct Session {
 }
 
 impl Session {
+    /// Whether a manual refresh (button or shortcut) is possible right now.
+    fn can_refresh(&self) -> bool {
+        self.client.is_some() && self.conn != Conn::Connecting
+    }
+
     fn new(profile: Profile, per_page: u32) -> Self {
         let client =
             Client::with_options(&profile.base_url, Some(profile.token.clone()), profile.client_options()).ok();
@@ -365,7 +409,10 @@ impl App {
     }
 
     pub fn subscription(&self) -> Subscription<Message> {
-        iced::time::every(Duration::from_secs(1)).map(|_| Message::Tick)
+        Subscription::batch([
+            iced::time::every(Duration::from_secs(1)).map(|_| Message::Tick),
+            iced::event::listen_with(shortcut),
+        ])
     }
 
     /// Switches the active airline (as the top-bar switcher does).
@@ -421,6 +468,8 @@ impl App {
                 self.toasts.dismiss(id);
                 Task::none()
             }
+            Message::FocusNext => iced::widget::operation::focus_next(),
+            Message::FocusPrevious => iced::widget::operation::focus_previous(),
             Message::Wizard(message) => self.update_wizard(message),
             other => {
                 let Mode::Main(session) = &mut self.mode else {
@@ -561,6 +610,14 @@ impl App {
                 events.push(Event::SwitchProfile(choice.id));
                 Task::none()
             }
+            Message::RefreshShortcut => {
+                if !session.can_refresh() {
+                    log::debug!("Refresh shortcut ignored: no client or already connecting");
+                    return Task::none();
+                }
+                log::debug!("Refresh via keyboard shortcut");
+                Self::update_session(session, config, Message::Refresh, events)
+            }
             Message::Refresh => {
                 log::debug!("Manual refresh");
                 session.flights.reset();
@@ -628,7 +685,11 @@ impl App {
                 events.push(Event::UpdateToken(session.profile.id));
                 Task::none()
             }
-            Message::Tick | Message::DismissToast(_) | Message::Wizard(_) => Task::none(),
+            Message::Tick
+            | Message::FocusNext
+            | Message::FocusPrevious
+            | Message::DismissToast(_)
+            | Message::Wizard(_) => Task::none(),
         }
     }
 
@@ -875,11 +936,14 @@ impl App {
         controls = controls
             .push(rule::vertical(1).style(theme::divider))
             .push(view_clock(self.now));
-        let refresh_enabled = session.client.is_some() && session.conn != Conn::Connecting;
         controls = controls.push(icon_button(
             Icon::RefreshCw,
-            "Refresh",
-            refresh_enabled.then_some(Message::Refresh),
+            if cfg!(target_os = "macos") {
+                "Refresh (F5 / Cmd+R)"
+            } else {
+                "Refresh (F5 / Ctrl+R)"
+            },
+            session.can_refresh().then_some(Message::Refresh),
         ));
 
         container(row![title, space::horizontal(), controls.height(Length::Fixed(40.0))].align_y(Alignment::Center))
@@ -1192,4 +1256,55 @@ fn view_statusbar(session: &Session, now: DateTime<Utc>) -> Element<'_, Message>
         .width(Length::Fill)
         .style(theme::statusbar)
         .into()
+}
+
+#[cfg(test)]
+mod tests {
+    use iced::event::Status;
+    use iced::keyboard::key::{Code, Named, Physical};
+    use iced::keyboard::{Event, Key, Location, Modifiers};
+
+    use super::{Message, shortcut};
+
+    fn press(key: Key, code: Code, modifiers: Modifiers, status: Status) -> Option<Message> {
+        let event = iced::Event::Keyboard(Event::KeyPressed {
+            modified_key: key.clone(),
+            key,
+            physical_key: Physical::Code(code),
+            location: Location::Standard,
+            modifiers,
+            text: None,
+            repeat: false,
+        });
+        shortcut(event, status, iced::window::Id::unique())
+    }
+
+    #[test]
+    fn keyboard_shortcuts() {
+        let r = || Key::Character("r".into());
+        let refresh = |m| matches!(m, Some(Message::RefreshShortcut));
+
+        assert!(refresh(press(
+            Key::Named(Named::F5),
+            Code::F5,
+            Modifiers::empty(),
+            Status::Ignored
+        )));
+        assert!(refresh(press(r(), Code::KeyR, Modifiers::COMMAND, Status::Ignored)));
+        // Refresh also works while a text input has focus.
+        assert!(refresh(press(r(), Code::KeyR, Modifiers::COMMAND, Status::Captured)));
+        assert!(press(r(), Code::KeyR, Modifiers::empty(), Status::Ignored).is_none());
+        assert!(press(r(), Code::KeyR, Modifiers::COMMAND | Modifiers::SHIFT, Status::Ignored).is_none());
+
+        let tab = || Key::Named(Named::Tab);
+        assert!(matches!(
+            press(tab(), Code::Tab, Modifiers::empty(), Status::Ignored),
+            Some(Message::FocusNext)
+        ));
+        assert!(matches!(
+            press(tab(), Code::Tab, Modifiers::SHIFT, Status::Ignored),
+            Some(Message::FocusPrevious)
+        ));
+        assert!(press(tab(), Code::Tab, Modifiers::empty(), Status::Captured).is_none());
+    }
 }

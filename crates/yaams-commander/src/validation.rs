@@ -41,7 +41,9 @@ pub fn flight_number(input: &str) -> Check<u32> {
     value.parse().map_err(|_| "1-4 digits".into())
 }
 
-/// Radio callsign: 1-4 digits optionally followed by up to 2 letters.
+/// Radio callsign suffix after the airline's ICAO prefix (e.g. `351C` in
+/// `DLH351C`): at most 4 characters, 1-4 digits optionally followed by up
+/// to 2 letters.
 pub fn callsign(input: &str) -> Check<String> {
     let value = input.trim().to_uppercase();
     if value.is_empty() {
@@ -49,8 +51,12 @@ pub fn callsign(input: &str) -> Check<String> {
     }
     let digits = value.chars().take_while(char::is_ascii_digit).count();
     let letters = &value[digits..];
-    if !(1..=4).contains(&digits) || letters.len() > 2 || !letters.chars().all(|c| c.is_ascii_uppercase()) {
-        return Err("1-4 digits, optionally followed by up to 2 letters".into());
+    if value.len() > 4
+        || !(1..=4).contains(&digits)
+        || letters.len() > 2
+        || !letters.chars().all(|c| c.is_ascii_uppercase())
+    {
+        return Err("Max. 4 characters: 1-4 digits, optionally followed by up to 2 letters".into());
     }
     Ok(value)
 }
@@ -178,11 +184,16 @@ mod tests {
         assert_eq!(flight_number("421").unwrap(), 421);
         assert!(flight_number("12345").is_err());
         assert!(flight_number("42A").is_err());
-        assert_eq!(callsign("421ab").unwrap(), "421AB");
+        assert_eq!(callsign("42ab").unwrap(), "42AB");
         assert_eq!(callsign("7").unwrap(), "7");
         assert!(callsign("AB").is_err());
         assert!(callsign("12345").is_err());
         assert!(callsign("12ABC").is_err());
+        assert_eq!(callsign("351c").unwrap(), "351C");
+        assert_eq!(callsign("12AB").unwrap(), "12AB");
+        assert!(callsign("4155CC").is_err());
+        assert!(callsign("4155C").is_err());
+        assert!(callsign("415CC").is_err());
     }
 
     #[test]
