@@ -116,6 +116,11 @@ fn profile_row(profile: &Profile, active: bool, confirming: bool) -> Element<'_,
     } else {
         space().into()
     };
+    let tls: Element<'_, Message> = if profile.accept_invalid_certs {
+        badge("Certificate not verified", theme::WARNING)
+    } else {
+        space().into()
+    };
     let actions: Element<'_, Message> = if confirming {
         row![
             text("Remove this profile?").size(13).color(theme::DANGER.light),
@@ -156,7 +161,7 @@ fn profile_row(profile: &Profile, active: bool, confirming: bool) -> Element<'_,
                     theme::SECONDARY.strong
                 })),
             column![
-                row![text(&profile.name).size(14).font(theme::FONT_BODY_BOLD), status]
+                row![text(&profile.name).size(14).font(theme::FONT_BODY_BOLD), status, tls]
                     .spacing(10)
                     .align_y(Alignment::Center),
                 mono(profile.base_url.clone()).size(12).color(theme::TEXT_SECONDARY),

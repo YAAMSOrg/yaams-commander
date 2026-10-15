@@ -139,6 +139,11 @@ fn wizard_on_first_run() {
     click(&mut app, "Get started");
     let mut ui = render(&app, "02-wizard-instance");
     assert!(ui.find("Instance address").is_ok());
+    assert!(ui.find("Certificate checks disabled").is_err());
+    drop(ui);
+    click(&mut app, "Allow self-signed certificates");
+    let mut ui = render(&app, "02-wizard-instance-self-signed");
+    assert!(ui.find("Certificate checks disabled").is_ok());
 }
 
 #[test]

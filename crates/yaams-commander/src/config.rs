@@ -11,6 +11,7 @@ use std::path::{Path, PathBuf};
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
+use yaams_api::ClientOptions;
 
 /// Environment variable overriding the configuration file location.
 pub const CONFIG_ENV: &str = "YAAMS_COMMANDER_CONFIG";
@@ -51,6 +52,9 @@ pub struct Profile {
     pub name: String,
     pub base_url: String,
     pub token: String,
+    /// Skip TLS certificate verification (self-signed certificates).
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub accept_invalid_certs: bool,
     #[serde(default)]
     pub last_airline_id: Option<u64>,
     pub created_at: DateTime<Utc>,
@@ -63,8 +67,16 @@ impl Profile {
             name,
             base_url,
             token,
+            accept_invalid_certs: false,
             last_airline_id: None,
             created_at: Utc::now(),
+        }
+    }
+
+    /// Connection settings for the API client of this profile.
+    pub fn client_options(&self) -> ClientOptions {
+        ClientOptions {
+            accept_invalid_certs: self.accept_invalid_certs,
         }
     }
 }
@@ -285,7 +297,8 @@ mod tests {
         let (_dir, store) = store();
         let mut config = Config::default();
         let a = Profile::new("Dev".into(), "https://dev.example/".into(), "tok-a".into());
-        let b = Profile::new("Prod".into(), "https://prod.example/".into(), "tok-b".into());
+        let mut b = Profile::new("Prod".into(), "https://prod.example/".into(), "tok-b".into());
+        b.accept_invalid_certs = true;
         let a_id = a.id;
         config.upsert_profile(a);
         config.upsert_profile(b.clone());

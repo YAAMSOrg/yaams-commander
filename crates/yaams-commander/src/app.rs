@@ -172,7 +172,8 @@ struct Session {
 
 impl Session {
     fn new(profile: Profile, per_page: u32) -> Self {
-        let client = Client::new(&profile.base_url, Some(profile.token.clone())).ok();
+        let client =
+            Client::with_options(&profile.base_url, Some(profile.token.clone()), profile.client_options()).ok();
         let conn = if client.is_some() {
             Conn::Connecting
         } else {

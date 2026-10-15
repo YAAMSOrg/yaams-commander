@@ -14,6 +14,15 @@ const CONNECT_TIMEOUT: Duration = Duration::from_secs(10);
 /// Upper bound when collecting all pages of a list, as a safety net.
 const MAX_PAGES: u32 = 50;
 
+/// Connection settings for [`Client::with_options`].
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
+pub struct ClientOptions {
+    /// Skip TLS certificate verification, e.g. for instances with a
+    /// self-signed certificate. This also accepts expired certificates and
+    /// mismatching host names, so the connection is no longer authenticated.
+    pub accept_invalid_certs: bool,
+}
+
 /// Client for one YAAMS instance and API token.
 ///
 /// Cheap to clone; clones share the connection pool.
@@ -28,6 +37,11 @@ impl Client {
     /// Creates a client. `base_url` is normalized with [`normalize_base_url`].
     /// TLS certificates are verified against the operating system trust store.
     pub fn new(base_url: &str, token: Option<String>) -> Result<Self> {
+        Self::with_options(base_url, token, ClientOptions::default())
+    }
+
+    /// Creates a client with explicit connection settings.
+    pub fn with_options(base_url: &str, token: Option<String>, options: ClientOptions) -> Result<Self> {
         let base = normalize_base_url(base_url)?;
         let mut headers = header::HeaderMap::new();
         headers.insert(header::ACCEPT, header::HeaderValue::from_static("application/json"));
@@ -36,6 +50,7 @@ impl Client {
             .default_headers(headers)
             .timeout(TIMEOUT)
             .connect_timeout(CONNECT_TIMEOUT)
+            .tls_danger_accept_invalid_certs(options.accept_invalid_certs)
             .build()
             .map_err(ApiError::from_reqwest)?;
         Ok(Self {

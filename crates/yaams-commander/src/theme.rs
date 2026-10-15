@@ -5,6 +5,7 @@
 
 use iced::border::Radius;
 use iced::font::{Family, Weight};
+use iced::widget::checkbox as checkbox_widget;
 use iced::widget::pick_list as pick_list_widget;
 use iced::widget::scrollable as scrollable_widget;
 use iced::widget::text_input as text_input_widget;
@@ -488,6 +489,27 @@ pub fn pick_list(invalid: bool) -> impl Fn(&Theme, pick_list_widget::Status) -> 
             background: PRIMARY_DARK.into(),
             border: border(border_color, 1.0, RADIUS),
         }
+    }
+}
+
+pub fn checkbox(_: &Theme, status: checkbox_widget::Status) -> checkbox_widget::Style {
+    let (is_checked, hovered, disabled) = match status {
+        checkbox_widget::Status::Active { is_checked } => (is_checked, false, false),
+        checkbox_widget::Status::Hovered { is_checked } => (is_checked, true, false),
+        checkbox_widget::Status::Disabled { is_checked } => (is_checked, false, true),
+    };
+    let border_color = if is_checked {
+        AMBER
+    } else if hovered {
+        color!(0x5a6478)
+    } else {
+        BORDER_STRONG
+    };
+    checkbox_widget::Style {
+        background: if is_checked { AMBER } else { PRIMARY_DARK }.into(),
+        icon_color: ON_AMBER,
+        border: border(border_color, 1.0, 4.0),
+        text_color: Some(if disabled { TEXT_MUTED } else { TEXT }),
     }
 }
 

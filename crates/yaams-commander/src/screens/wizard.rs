@@ -1,8 +1,8 @@
 //! First-run / add-profile wizard: instance URL, API token, profile name.
 
-use iced::widget::{button, column, container, pick_list, row, scrollable, space, svg, text, text_input};
+use iced::widget::{button, checkbox, column, container, pick_list, row, scrollable, space, svg, text, text_input};
 use iced::{Alignment, Element, Length, Padding, Task};
-use yaams_api::{ApiError, Client, InstanceInfo, User};
+use yaams_api::{ApiError, Client, ClientOptions, InstanceInfo, User};
 
 use crate::config::Profile;
 use crate::icons::{Icon, icon};
@@ -45,6 +45,7 @@ pub enum Message {
     Back,
     Cancel,
     UrlChanged(String),
+    AcceptInvalidCertsToggled(bool),
     InfoLoaded(Result<(String, InstanceInfo), ApiError>),
     TokenChanged(String),
     ToggleToken,
@@ -79,6 +80,7 @@ pub struct Wizard {
     step: Step,
     url: String,
     base_url: Option<String>,
+    accept_invalid_certs: bool,
     info: Option<InstanceInfo>,
     token: String,
     show_token: bool,
@@ -100,6 +102,7 @@ impl Wizard {
             step: Step::Welcome,
             url: String::new(),
             base_url: None,
+            accept_invalid_certs: false,
             info: None,
             token: String::new(),
             show_token: false,
@@ -119,6 +122,7 @@ impl Wizard {
         let mut wizard = Self::new(true, None);
         wizard.url = profile.base_url.clone();
         wizard.name = profile.name.clone();
+        wizard.accept_invalid_certs = profile.accept_invalid_certs;
         wizard.editing = Some(profile);
         wizard.step = Step::Instance;
         let task = wizard.check_url();
@@ -145,6 +149,12 @@ impl Wizard {
                 self.error = None;
                 Outcome::None
             }
+            Message::AcceptInvalidCertsToggled(accept) => {
+                self.accept_invalid_certs = accept;
+                self.info = None;
+                self.error = None;
+                Outcome::None
+            }
             Message::InfoLoaded(result) => {
                 self.busy = false;
                 match result {
@@ -164,7 +174,13 @@ impl Wizard {
                             info.api_version
                         ));
                     }
-                    Err(e) => self.error = Some(e.to_string()),
+                    Err(e) => {
+                        let mut error = e.to_string();
+                        if !self.accept_invalid_certs && error.to_lowercase().contains("certificate") {
+                            error.push_str(" If the instance uses a self-signed certificate, allow it below.");
+                        }
+                        self.error = Some(error);
+                    }
                 }
                 Outcome::None
             }
@@ -249,6 +265,7 @@ impl Wizard {
                     }
                     None => Profile::new(name.to_string(), base_url.clone(), token),
                 };
+                profile.accept_invalid_certs = self.accept_invalid_certs;
                 profile.last_airline_id = self.airline.as_ref().map(|a| a.id);
                 Outcome::Finished(profile)
             }
@@ -256,7 +273,7 @@ impl Wizard {
     }
 
     fn check_url(&mut self) -> Task<Message> {
-        let client = match Client::new(&self.url, None) {
+        let client = match Client::with_options(&self.url, None, self.client_options()) {
             Ok(client) => client,
             Err(e) => {
                 self.error = Some(e.to_string());
@@ -279,7 +296,7 @@ impl Wizard {
         let Some(base_url) = &self.base_url else {
             return Task::none();
         };
-        let client = match Client::new(base_url, Some(self.token.clone())) {
+        let client = match Client::with_options(base_url, Some(self.token.clone()), self.client_options()) {
             Ok(client) => client,
             Err(e) => {
                 self.error = Some(e.to_string());
@@ -288,6 +305,12 @@ impl Wizard {
         };
         self.busy = true;
         Task::perform(async move { client.current_user().await }, Message::UserLoaded)
+    }
+
+    fn client_options(&self) -> ClientOptions {
+        ClientOptions {
+            accept_invalid_certs: self.accept_invalid_certs,
+        }
     }
 
     pub fn view(&self) -> Element<'_, Message> {
@@ -514,8 +537,25 @@ impl Wizard {
             heading("Instance address", 26),
             body("Enter the address of the YAAMS instance you fly for. Commander checks that it is reachable and speaks the v1 API."),
             field("Instance URL", input, Some("HTTPS is used when no scheme is given".into()), None),
+            checkbox(self.accept_invalid_certs)
+                .label("Allow self-signed certificates")
+                .on_toggle_maybe((!self.busy).then_some(Message::AcceptInvalidCertsToggled))
+                .size(16)
+                .text_size(13)
+                .spacing(10)
+                .style(theme::checkbox),
         ]
         .spacing(12);
+
+        if self.accept_invalid_certs {
+            col = col.push(banner(
+                theme::WARNING,
+                Icon::TriangleAlert,
+                "Certificate checks disabled",
+                "Commander will not verify the identity of this instance. Only use this for test or internal instances on a network you trust - your API token could otherwise be intercepted.",
+                None,
+            ));
+        }
 
         if let Some(info) = &self.info {
             let mut details = column![

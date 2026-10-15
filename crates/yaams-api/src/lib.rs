@@ -8,7 +8,7 @@ mod error;
 pub mod models;
 mod url;
 
-pub use client::Client;
+pub use client::{Client, ClientOptions};
 pub use error::{ApiError, Result};
 pub use models::*;
 pub use url::normalize_base_url;
