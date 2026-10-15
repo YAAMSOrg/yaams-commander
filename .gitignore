@@ -1,0 +1,4 @@
+/target
+/dist
+*.png.new
+.DS_Store

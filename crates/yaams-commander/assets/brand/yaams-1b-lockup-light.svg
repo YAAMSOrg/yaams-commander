@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="240" viewBox="0 0 900 240">
+<rect width="900" height="240" fill="#f5f6f7"></rect>
+<g transform="translate(280,70)">
+  <path d="M48 8 L88 64 L60 64 L48 46 L36 64 L8 64 Z" fill="#b8792c"></path>
+  <path d="M48 8 L60 64 L48 46 L36 64 Z" fill="#282e3a" opacity="0.35"></path>
+</g>
+<text x="420" y="118" font-family="&#39;Space Grotesk&#39;,Arial,sans-serif" font-weight="700" font-size="46" fill="#2a2e38">YAAMS</text>
+</svg>
