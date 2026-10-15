@@ -1,5 +1,5 @@
 use chrono::{NaiveDate, NaiveDateTime};
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize, Deserializer, Serialize};
 
 /// Format of PIREP block times (UTC) in requests and responses.
 pub const BLOCK_TIME_FORMAT: &str = "%Y-%m-%d %H:%M:%S";
@@ -11,7 +11,8 @@ pub struct Flight {
     pub id: u64,
     #[serde(default)]
     pub callsign: String,
-    #[serde(default)]
+    /// Sent as a JSON integer by the server; strings are accepted as well.
+    #[serde(default, deserialize_with = "string_or_integer")]
     pub flight_number: String,
     #[serde(default)]
     pub full_flight_number: String,
@@ -58,6 +59,22 @@ impl Flight {
     pub fn block_on_time(&self) -> Option<NaiveDateTime> {
         parse_block_time(self.block_on.as_deref()?)
     }
+}
+
+fn string_or_integer<'de, D>(deserializer: D) -> Result<String, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    #[derive(Deserialize)]
+    #[serde(untagged)]
+    enum Value {
+        String(String),
+        Integer(u64),
+    }
+    Ok(match Value::deserialize(deserializer)? {
+        Value::String(s) => s,
+        Value::Integer(n) => n.to_string(),
+    })
 }
 
 fn parse_block_time(value: &str) -> Option<NaiveDateTime> {
@@ -265,6 +282,17 @@ fn serialize_block_time<S: serde::Serializer>(value: &NaiveDateTime, serializer:
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn flight_number_accepts_integer_and_string() {
+        for number in [serde_json::json!(331), serde_json::json!("331")] {
+            let flight: Flight = serde_json::from_value(serde_json::json!({
+                "id": 9, "flightNumber": number, "status": { "id": 2, "name": "Accepted" }
+            }))
+            .unwrap();
+            assert_eq!(flight.flight_number, "331");
+        }
+    }
 
     #[test]
     fn default_query_params() {

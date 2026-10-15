@@ -54,7 +54,7 @@ fn bundle(administer: bool) -> Box<Bundle> {
 }
 
 fn flight(id: u64, number: &str, status: (u8, &str)) -> serde_json::Value {
-    json!({ "id": id, "callsign": number, "flightNumber": number, "fullFlightNumber": format!("EV{number}"),
+    json!({ "id": id, "callsign": number, "flightNumber": number.parse::<u32>().unwrap(), "fullFlightNumber": format!("EV{number}"),
             "fullIcaoCallsign": format!("EVA{number}"), "departureIcao": "EDDF", "arrivalIcao": "EGLL",
             "cruiseAltitude": 36000, "blockOff": "2026-07-11 10:00:00", "blockOn": "2026-07-11 11:30:00",
             "duration": "01:30", "burnedFuel": 4200, "route": "SOVAT UL610 KONAN", "onlineNetwork": 2,

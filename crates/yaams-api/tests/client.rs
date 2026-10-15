@@ -15,7 +15,7 @@ fn airline_json(abilities: serde_json::Value, suspended: bool) -> serde_json::Va
 
 fn flight_json(id: u64) -> serde_json::Value {
     json!({
-        "id": id, "callsign": "421", "flightNumber": "421", "fullFlightNumber": "EV421",
+        "id": id, "callsign": "421", "flightNumber": 421, "fullFlightNumber": "EV421",
         "fullIcaoCallsign": "EVA421", "departureIcao": "EDDF", "arrivalIcao": "EGLL",
         "cruiseAltitude": 36000, "blockOff": "2026-07-11 10:00:00",
         "blockOn": "2026-07-11 11:30:00", "duration": "01:30", "burnedFuel": 4200,
