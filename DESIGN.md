@@ -33,48 +33,48 @@ colors:
   neutral-status-light: "#e2e5e8"
 typography:
   display:
-    fontFamily: "Space Grotesk"
+    fontFamily: "IBM Plex Sans Condensed"
     fontSize: "26px"
     fontWeight: 700
   headline:
-    fontFamily: "Space Grotesk"
+    fontFamily: "IBM Plex Sans Condensed"
     fontSize: "22px"
     fontWeight: 700
   title:
-    fontFamily: "Space Grotesk"
+    fontFamily: "IBM Plex Sans Condensed"
     fontSize: "20px"
     fontWeight: 700
   body:
-    fontFamily: "Inter"
+    fontFamily: "IBM Plex Sans"
     fontSize: "13px"
     fontWeight: 400
   body-strong:
-    fontFamily: "Inter"
+    fontFamily: "IBM Plex Sans"
     fontSize: "13px"
-    fontWeight: 700
+    fontWeight: 600
   body-small:
-    fontFamily: "Inter"
+    fontFamily: "IBM Plex Sans"
     fontSize: "12px"
     fontWeight: 400
   label:
-    fontFamily: "Inter"
-    fontSize: "11px"
-    fontWeight: 700
+    fontFamily: "IBM Plex Sans Condensed"
+    fontSize: "12px"
+    fontWeight: 600
     letterSpacing: "normal"
   data:
-    fontFamily: "JetBrains Mono"
+    fontFamily: "IBM Plex Mono"
     fontSize: "13px"
     fontWeight: 400
   data-strong:
-    fontFamily: "JetBrains Mono"
+    fontFamily: "IBM Plex Mono"
     fontSize: "13px"
     fontWeight: 700
   clock:
-    fontFamily: "JetBrains Mono"
+    fontFamily: "IBM Plex Mono"
     fontSize: "17px"
     fontWeight: 700
   chip:
-    fontFamily: "JetBrains Mono"
+    fontFamily: "IBM Plex Mono"
     fontSize: "10px"
     fontWeight: 700
 rounded:
@@ -234,26 +234,26 @@ Each tone is a pair: a strong colour and a light colour. On the dark UI the **li
 
 ## Typography
 
-**Display Font:** Space Grotesk Bold (headings, wordmark)
-**Body Font:** Inter, regular and bold
-**Data Font:** JetBrains Mono, regular and bold
+**Display Font:** IBM Plex Sans Condensed, semibold and bold (headings, captions, wordmark)
+**Body Font:** IBM Plex Sans, regular and semibold
+**Data Font:** IBM Plex Mono, regular and bold
 
-**Character:** Space Grotesk gives page titles an engineered, slightly technical edge; Inter stays neutral for prose and controls; JetBrains Mono turns every code, time and figure into an aligned ledger entry. All three are embedded as static files - never variable fonts, which cosmic-text cannot instance.
+**Character:** One superfamily, the type of enterprise and mainframe operations software rather than of a startup landing page. Plex Sans keeps prose and controls sober; the condensed cut gives captions, table headers and page titles the tight feel of an ops board and buys horizontal density; Plex Mono turns every code, time and figure into an aligned ledger entry with the same skeleton as the prose. All files are embedded as static instances - never variable fonts, which cosmic-text cannot instance.
 
 ### Hierarchy
-- **Display** (Space Grotesk 700, 26px): wizard step headings only.
-- **Headline** (Space Grotesk 700, 22px): page title in the top bar, under a breadcrumb caption.
-- **Title** (Space Grotesk 700, 20px): empty-state headings.
-- **Body** (Inter 400, 13px, `text-secondary`): descriptions, nav labels, banner messages. 14px for empty-state messages.
-- **Body strong** (Inter 700, 13px): button labels, banner and toast titles, active nav label, user name.
-- **Body small** (Inter 400, 12px): hints, field errors, toast messages, tooltips.
-- **Label** (Inter 700, 11px, uppercase, `text-muted`): field labels, section captions, table headers, breadcrumbs.
-- **Data** (JetBrains Mono 400/700, 13px): ICAO codes, flight numbers, callsigns, times, fuel, route strings, pagination counts. Larger mono (up to ~30px) for the flight-strip and detail-panel identifiers.
-- **Clock** (JetBrains Mono 700, 17px) over a 10px mono uppercase date: the UTC clock.
-- **Chip** (JetBrains Mono 700, 10px, uppercase): status chips, role chips, "SOON" markers.
+- **Display** (Plex Sans Condensed 700, 26px): wizard step headings only.
+- **Headline** (Plex Sans Condensed 700, 22px): page title in the top bar, under a breadcrumb caption.
+- **Title** (Plex Sans Condensed 700, 20px): empty-state headings.
+- **Body** (Plex Sans 400, 13px, `text-secondary`): descriptions, nav labels, banner messages. 14px for empty-state messages.
+- **Body strong** (Plex Sans 600, 13px): button labels, banner and toast titles, active nav label, user name.
+- **Body small** (Plex Sans 400, 12px): hints, field errors, toast messages, tooltips.
+- **Label** (Plex Sans Condensed 600, 12px, uppercase, `text-muted`): field labels, section captions, table headers, breadcrumbs.
+- **Data** (Plex Mono 400/700, 13px): ICAO codes, flight numbers, callsigns, times, fuel, route strings, pagination counts. Larger mono (up to ~30px) for the flight-strip and detail-panel identifiers.
+- **Clock** (Plex Mono 700, 17px) over a 10px mono uppercase date: the UTC clock.
+- **Chip** (Plex Mono 700, 10px, uppercase): status chips, role chips, "SOON" markers.
 
 ### Named Rules
-**The Ledger Column Rule.** If it is a code, a time, an ID or a number, it is set in JetBrains Mono. Prose is never set in mono; data is never set in Inter.
+**The Ledger Column Rule.** If it is a code, a time, an ID or a number, it is set in Plex Mono. Prose is never set in mono; data is never set in Plex Sans.
 
 **The Zulu Rule.** Every displayed time is UTC and ends in `Z` (`10:00Z`, `2026-07-11 11:35Z`). Durations (block time) carry no suffix.
 
@@ -297,7 +297,7 @@ Tight radii and 1px strokes everywhere - the look of ruled paper and instrument 
 ## Components
 
 ### Buttons
-Instrument-precise: compact, 1px bordered, bold 13px label with an optional 14px leading Lucide icon (8px gap), 8px x 14px padding.
+Instrument-precise: compact, 1px bordered, semibold 13px label with an optional 14px leading Lucide icon (8px gap), 8px x 14px padding.
 - **Primary:** solid Dispatch Amber with On-Amber Ink. Lighter on hover, darker on press, umber when disabled.
 - **Secondary:** a ruled outline - no fill, Strong Line border, primary text. Hover fills Hover Slate with a Hover Line border; pressed fills Raised Slate.
 - **Danger:** translucent red (15%) with a 60% red border and light-red text; turns solid red with white text on hover.
@@ -326,7 +326,7 @@ Uppercase 10px bold mono, 2px x 7px padding, 2px radius, translucent tone fill +
 Sidebar items: 16px icon + 13px label, 9px x 12px padding, 4px radius. Inactive is secondary text; hover fills Console Slate; active is amber text and icon (bold label) on a 14% amber wash. Unimplemented areas show a muted mono "SOON" marker. Entries the user lacks abilities for are hidden.
 
 ### Data table
-The signature component. Raised Slate header (36px) with uppercase 11px captions and sort chevrons (amber when active), 38px Console Slate rows ruled off by a hairline Ledger Line (no zebra striping), 12px horizontal cell padding, numbers right-aligned. Flight numbers in bold amber mono, other data in mono. Hover fills Hover Slate; selection is a 13% amber wash with a 1px amber outline. A Raised Slate footer band carries the range ("1-3 of 3"), rows-per-page pick list and first/prev/page/next/last ghost buttons.
+The signature component. Raised Slate header (36px) with uppercase 12px condensed captions and sort chevrons (amber when active), 38px Console Slate rows ruled off by a hairline Ledger Line (no zebra striping), 12px horizontal cell padding, numbers right-aligned. Flight numbers in bold amber mono, other data in mono. Hover fills Hover Slate; selection is a 13% amber wash with a 1px amber outline. A Raised Slate footer band carries the range ("1-3 of 3"), rows-per-page pick list and first/prev/page/next/last ghost buttons.
 
 ### Banners and toasts
 - **Banner:** full-width tone box (translucent fill, 1px tone outline, 4px radius, 10px x 14px padding) with a 16px tone icon, bold title and 12px secondary message, optional trailing action.
@@ -342,12 +342,12 @@ Centered column, max 460px: 72px tinted icon disc, 20px title, 14px secondary me
 
 ### Do:
 - **Do** take every colour, font and style from `src/theme.rs`; no widget falls back to the default Iced look.
-- **Do** set codes, times, IDs and figures in JetBrains Mono, and end every time with `Z`.
+- **Do** set codes, times, IDs and figures in Plex Mono, and end every time with `Z`.
 - **Do** separate surfaces with the slate tonal steps and 1px `ledger-line` borders.
 - **Do** keep a single solid amber primary action per view.
 - **Do** show status as translucent chips and banners using the light tone as foreground.
 - **Do** give every nav item and primary action a Lucide icon.
-- **Do** use uppercase 11px bold captions for labels and section titles.
+- **Do** use uppercase 12px condensed semibold captions for labels and section titles.
 - **Do** rule lists and tables with hairlines; let a status filter and its totals be the same control.
 
 ### Don't:
@@ -357,6 +357,6 @@ Centered column, max 460px: 72px tinted icon disc, 20px title, 14px secondary me
 - **Don't** fill large areas with a status colour.
 - **Don't** use solid amber for selection or an active filter; solid amber is for the primary action.
 - **Don't** build hero-metric stat tiles or zebra-striped tables.
-- **Don't** use variable font files or add font families beyond the three embedded ones.
+- **Don't** use variable font files or add font families outside the IBM Plex superfamily.
 - **Don't** show local time anywhere.
 - **Don't** add illustrations, gradients or playful ornament; the ledger plays it straight.

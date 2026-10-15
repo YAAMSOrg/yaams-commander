@@ -8,8 +8,8 @@ use crate::theme::{self, Tone};
 /// Small uppercase caption used for field labels and section titles.
 pub fn caption<'a>(value: impl Into<String>) -> Text<'a> {
     text(value.into().to_uppercase())
-        .size(11)
-        .font(theme::FONT_BODY_BOLD)
+        .size(12)
+        .font(theme::FONT_CAPTION)
         .color(theme::TEXT_MUTED)
 }
 

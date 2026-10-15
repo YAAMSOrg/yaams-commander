@@ -59,7 +59,7 @@ pub fn header<'a, M: Clone + 'a, S: Copy + PartialEq + 'a>(
     on_sort: impl Fn(S) -> M,
 ) -> Element<'a, M> {
     let cells = columns.iter().map(|column| {
-        let title = text(column.title.to_uppercase()).size(11).font(theme::FONT_BODY_BOLD);
+        let title = text(column.title.to_uppercase()).size(12).font(theme::FONT_CAPTION);
         let content: Element<'a, M> = match column.sort {
             Some(key) => {
                 let active = key == current.0;

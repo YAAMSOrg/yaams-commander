@@ -79,7 +79,7 @@ Brand assets come from the YAAMS logo package (chevron wing icon + wordmark).
 | Info | `#2c94b0` / `#d6f0f9` | Informational notices |
 | Secondary | `#69737d` / `#e2e5e8` | Neutral, cancel buttons |
 
-- Fonts (embedded): Space Grotesk Bold (headings, wordmark), Inter (body), JetBrains Mono (ICAO codes, flight numbers, times, figures). Use static font files only - cosmic-text does not pick instances from variable fonts.
+- Fonts (embedded): IBM Plex superfamily only - Plex Sans Condensed (headings, captions, table headers, wordmark), Plex Sans (body), Plex Mono (ICAO codes, flight numbers, times, figures). Use static font files only - cosmic-text does not pick instances from variable fonts.
 - Icons: Lucide icon font. Every nav item and primary action has an icon.
 - Dense, data-first layout: sidebar nav, top bar with airline/profile switchers and a UTC clock, status bar with instance info. Times are shown in UTC with a `Z` suffix.
 

@@ -76,18 +76,27 @@ impl Tone {
     }
 }
 
-// Fonts (embedded, see main.rs).
-pub const FONT_BODY: Font = Font::with_name("Inter");
+// Fonts (embedded, see main.rs): one IBM Plex superfamily. Sans for prose
+// and controls, Condensed for captions and headings, Mono for data.
+pub const FONT_BODY: Font = Font::with_name("IBM Plex Sans");
+/// Emphasis in prose and controls. Plex SemiBold; full Bold is too heavy at 13px.
 pub const FONT_BODY_BOLD: Font = Font {
-    weight: Weight::Bold,
+    weight: Weight::Semibold,
     ..FONT_BODY
 };
+/// Uppercase captions, field labels and table headers.
+pub const FONT_CAPTION: Font = Font {
+    family: Family::Name("IBM Plex Sans Condensed"),
+    weight: Weight::Semibold,
+    ..Font::DEFAULT
+};
+/// Page titles, headings and the wordmark.
 pub const FONT_DISPLAY: Font = Font {
-    family: Family::Name("Space Grotesk"),
+    family: Family::Name("IBM Plex Sans Condensed"),
     weight: Weight::Bold,
     ..Font::DEFAULT
 };
-pub const FONT_MONO: Font = Font::with_name("JetBrains Mono");
+pub const FONT_MONO: Font = Font::with_name("IBM Plex Mono");
 pub const FONT_MONO_BOLD: Font = Font {
     weight: Weight::Bold,
     ..FONT_MONO
