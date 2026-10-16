@@ -8,6 +8,7 @@ use iced::font::{Family, Weight};
 use iced::widget::checkbox as checkbox_widget;
 use iced::widget::pick_list as pick_list_widget;
 use iced::widget::scrollable as scrollable_widget;
+use iced::widget::text_editor as text_editor_widget;
 use iced::widget::text_input as text_input_widget;
 use iced::widget::{button, container, overlay::menu, rule};
 use iced::{Background, Border, Color, Font, Shadow, Theme, Vector, color};
@@ -552,6 +553,28 @@ pub fn text_input(invalid: bool) -> impl Fn(&Theme, text_input_widget::Status) -
             } else {
                 TEXT
             },
+            selection: Color { a: 0.35, ..AMBER },
+        }
+    }
+}
+
+pub fn text_editor(invalid: bool) -> impl Fn(&Theme, text_editor_widget::Status) -> text_editor_widget::Style {
+    move |_, status| {
+        let border_color = if invalid {
+            DANGER.strong
+        } else {
+            match status {
+                text_editor_widget::Status::Focused { .. } => AMBER,
+                text_editor_widget::Status::Hovered => BORDER_HOVER,
+                _ => BORDER_STRONG,
+            }
+        };
+        let disabled = matches!(status, text_editor_widget::Status::Disabled);
+        text_editor_widget::Style {
+            background: if disabled { SURFACE } else { PRIMARY_DARK }.into(),
+            border: border(border_color, 1.0, RADIUS),
+            placeholder: PLACEHOLDER,
+            value: if disabled { TEXT_SECONDARY } else { TEXT },
             selection: Color { a: 0.35, ..AMBER },
         }
     }

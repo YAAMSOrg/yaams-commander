@@ -3,7 +3,7 @@
 use std::collections::BTreeMap;
 
 use chrono::{NaiveDateTime, Utc};
-use iced::widget::{button, column, container, pick_list, row, scrollable, space, text, text_input};
+use iced::widget::{button, column, container, pick_list, row, scrollable, space, text, text_editor, text_input};
 use iced::{Alignment, Element, Length, Padding, Task};
 use yaams_api::{Aircraft, Airline, ApiError, Client, Flight, NewPirep, OnlineNetwork};
 
@@ -86,7 +86,7 @@ pub enum Message {
     OnTime(String),
     OnNow,
     Fuel(String),
-    Route(String),
+    Route(text_editor::Action),
     Network(OnlineNetwork),
     Remarks(String),
     Submit,
@@ -120,7 +120,6 @@ struct Inputs {
     on_date: String,
     on_time: String,
     fuel: String,
-    route: String,
     network: Option<u64>,
     remarks: String,
 }
@@ -134,6 +133,8 @@ enum Fleet {
 pub struct PirepForm {
     airline_id: u64,
     inputs: Inputs,
+    /// Multiline so long routes stay readable; kept out of `Inputs` as it is not `Clone`.
+    route: text_editor::Content,
     fleet: Fleet,
     errors: BTreeMap<Field, String>,
     server_error: Option<String>,
@@ -154,6 +155,7 @@ impl PirepForm {
         let mut form = Self {
             airline_id: ctx.airline.id,
             inputs,
+            route: text_editor::Content::new(),
             fleet: Fleet::Loading,
             errors: BTreeMap::new(),
             server_error: None,
@@ -234,12 +236,22 @@ impl PirepForm {
                 i.on_time = now.format("%H:%M").to_string();
             }
             Message::Fuel(v) => i.fuel = v.chars().filter(|c| c.is_ascii_digit() || *c == ',').collect(),
-            Message::Route(v) => i.route = v.to_uppercase(),
+            Message::Route(action) => {
+                let is_edit = action.is_edit();
+                self.route.perform(action);
+                let value = self.route.text();
+                if is_edit && value.chars().any(char::is_lowercase) {
+                    let cursor = self.route.cursor();
+                    self.route = text_editor::Content::with_text(&value.to_uppercase());
+                    self.route.move_to(cursor);
+                }
+            }
             Message::Network(n) => i.network = Some(n.id),
             Message::Remarks(v) => i.remarks = v,
             Message::Clear => {
                 let network = self.inputs.network;
                 let today = Utc::now().format("%Y-%m-%d").to_string();
+                self.route = text_editor::Content::new();
                 self.inputs = Inputs {
                     off_date: today.clone(),
                     on_date: today,
@@ -294,6 +306,7 @@ impl PirepForm {
                         events.push(Event::PirepFiled(Box::new(flight)));
                         let network = self.inputs.network;
                         let today = Utc::now().format("%Y-%m-%d").to_string();
+                        self.route = text_editor::Content::new();
                         self.inputs = Inputs {
                             off_date: today.clone(),
                             on_date: today,
@@ -348,7 +361,7 @@ impl PirepForm {
         let off = c.check(Field::BlockOff, datetime(&i.off_date, &i.off_time));
         let on = c.check(Field::BlockOn, datetime(&i.on_date, &i.on_time));
         let fuel = c.check(Field::Fuel, validation::fuel(&i.fuel));
-        let route = c.check(Field::Route, validation::route(&i.route));
+        let route = c.check(Field::Route, validation::route(&self.route.text()));
         let network = c.check(
             Field::Network,
             i.network
@@ -548,7 +561,16 @@ impl PirepForm {
             .spacing(12),
             field(
                 "Route",
-                input("SOVAT UL610 KONAN", &i.route, Message::Route, Field::Route, true),
+                text_editor(&self.route)
+                    .placeholder("SOVAT UL610 KONAN")
+                    .on_action(Message::Route)
+                    .key_binding(route_key_binding)
+                    .padding(Padding::from([9, 11]))
+                    .size(14)
+                    .font(theme::FONT_MONO)
+                    .min_height(84)
+                    .max_height(180)
+                    .style(theme::text_editor(self.errors.contains_key(&Field::Route))),
                 Some("Use DCT for a direct flight".into()),
                 self.error(Field::Route)
             ),
@@ -820,6 +842,17 @@ fn summary_line<'a>(label: &'static str, value: String) -> Element<'a, Message> 
     ]
     .align_y(Alignment::Center)
     .into()
+}
+
+/// Enter files the PIREP like in the single-line fields; long routes wrap instead.
+fn route_key_binding(key: text_editor::KeyPress) -> Option<text_editor::Binding<Message>> {
+    use iced::keyboard::{Key, key::Named};
+    match key.key {
+        Key::Named(Named::Enter) if key.status != text_editor::Status::Disabled => {
+            Some(text_editor::Binding::Custom(Message::Submit))
+        }
+        _ => text_editor::Binding::from_key_press(key),
+    }
 }
 
 fn icao_input(value: &str) -> String {

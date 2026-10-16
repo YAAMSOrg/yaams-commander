@@ -207,6 +207,17 @@ fn pirep_form_validates_and_maps_server_errors() {
     let mut ui = render(&app, "08-pirep-errors");
     assert!(ui.find("Check the form").is_ok());
     assert!(ui.find("Select an aircraft").is_ok());
+    assert!(ui.find("Required (use DCT for direct)").is_ok());
+    drop(ui);
+
+    // Long routes go into a multiline editor; pasted text is uppercased and revalidated live.
+    let route = "sovat ul610 konan dct rodol t420 tinan ul975 lambo dct kopas l980 abnur dct midsi";
+    let paste = iced::widget::text_editor::Edit::Paste(std::sync::Arc::new(route.into()));
+    let _ = app.update(Message::Pirep(pirep::Message::Route(
+        iced::widget::text_editor::Action::Edit(paste),
+    )));
+    let mut ui = render(&app, "08b-pirep-long-route");
+    assert!(ui.find("Required (use DCT for direct)").is_err());
     drop(ui);
 
     let errors = [(
