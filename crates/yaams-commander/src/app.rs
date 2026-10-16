@@ -123,7 +123,6 @@ pub enum Page {
     AirlineSettings,
     Notifications,
     FoundAirline,
-    Administration,
     Settings,
 }
 
@@ -138,7 +137,6 @@ impl Page {
             Self::AirlineSettings => "Airline settings",
             Self::Notifications => "Notifications",
             Self::FoundAirline => "Found an airline",
-            Self::Administration => "Administration",
             Self::Settings => "Settings",
         }
     }
@@ -160,7 +158,6 @@ impl Page {
             Self::AirlineSettings => Icon::Settings2,
             Self::Notifications => Icon::Bell,
             Self::FoundAirline => Icon::Building2,
-            Self::Administration => Icon::ShieldCheck,
             Self::Settings => Icon::Settings,
         }
     }
@@ -173,7 +170,6 @@ impl Page {
             Self::AirlineSettings => "Configure the airline's operations settings and announcements.",
             Self::Notifications => "Your notifications about PIREPs, memberships and announcements.",
             Self::FoundAirline => "Found a new virtual airline on this instance.",
-            Self::Administration => "Instance administration for Super-Admins.",
             _ => "",
         }
     }
@@ -299,7 +295,6 @@ impl Session {
             Page::Members => abilities.manage_members || abilities.manage_invite_codes,
             Page::AirlineSettings => abilities.edit_settings || abilities.manage_notams,
             Page::FoundAirline => instance.found_airline,
-            Page::Administration => instance.administer_instance,
         }
     }
 
@@ -1036,10 +1031,7 @@ fn view_sidebar(session: &Session) -> Element<'_, Message> {
     for (title, pages) in [
         ("Operations", &[Page::Flights, Page::FilePirep, Page::ReviewQueue][..]),
         ("Airline", &[Page::Fleet, Page::Members, Page::AirlineSettings][..]),
-        (
-            "Instance",
-            &[Page::Notifications, Page::FoundAirline, Page::Administration][..],
-        ),
+        ("Instance", &[Page::Notifications, Page::FoundAirline][..]),
     ] {
         if let Some(section) = section(title, pages) {
             nav = nav.push(section);

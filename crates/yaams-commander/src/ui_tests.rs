@@ -151,18 +151,13 @@ fn flight_log_and_detail() {
     let dir = tempfile::tempdir().unwrap();
     let mut app = connected_app(&dir);
     let mut ui = render(&app, "03-flights");
-    for text in [
-        "Flight log",
-        "EV421",
-        "EV422",
-        "Administration",
-        "Review queue",
-        "File PIREP",
-    ] {
+    for text in ["Flight log", "EV421", "EV422", "Review queue", "File PIREP"] {
         assert!(ui.find(text).is_ok(), "missing {text}");
     }
     // No ability -> no nav entry.
     assert!(ui.find("Found an airline").is_err());
+    // Instance administration is web UI only, even with the ability.
+    assert!(ui.find("Administration").is_err());
     drop(ui);
 
     click(&mut app, "EV423");

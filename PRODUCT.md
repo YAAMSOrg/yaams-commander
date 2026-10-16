@@ -39,7 +39,8 @@ A desktop client for YAAMS that lets pilots and staff do their virtual-airline w
 ## Capabilities and Constraints
 
 - Implemented: first-run wizard, multi-profile configuration, flight log (list, filters, sorting, paging, detail panel), PIREP filing with client-side validation mirroring the server.
-- Not yet implemented (placeholder screens linking to the web UI): review queue, fleet, members, airline settings, notifications, found an airline, administration.
+- Not yet implemented (placeholder screens linking to the web UI): review queue, fleet, members, airline settings, notifications, found an airline.
+- Out of scope: instance administration - it stays in the web UI only.
 - UI is gated exclusively on `abilities` flags; entries the user cannot use are hidden, not disabled. The server still enforces everything, so `403` must be handled gracefully.
 - Rust + Iced (custom theme, embedded fonts, Lucide icon font). Visual verification goes through headless `iced_test` snapshots, never synthetic OS input.
 - The API token is stored in the config file; it must never be logged or displayed casually.
