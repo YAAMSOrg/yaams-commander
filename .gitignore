@@ -3,3 +3,4 @@
 *.png.new
 .DS_Store
 .impeccable/config.local.json
+.serena/
